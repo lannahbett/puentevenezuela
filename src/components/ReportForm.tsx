@@ -82,17 +82,19 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
       return;
     }
     mutation.mutate({
-      type,
-      category: category as any,
-      title,
-      description: description || undefined,
-      latitude: lat,
-      longitude: lng,
-      location_name: locationName || undefined,
-      contact_name: contactName || undefined,
-      contact_phone: contactPhone || undefined,
-      contact_email: contactEmail || undefined,
-      urgency: parseInt(urgency, 10),
+      data: {
+        type,
+        category: category as any,
+        title,
+        description: description || undefined,
+        latitude: lat,
+        longitude: lng,
+        location_name: locationName || undefined,
+        contact_name: contactName || undefined,
+        contact_phone: contactPhone || undefined,
+        contact_email: contactEmail || undefined,
+        urgency: parseInt(urgency, 10),
+      },
     });
   }
 
