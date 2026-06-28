@@ -1,0 +1,12 @@
+INSERT INTO public.reports (type, category, title, description, latitude, longitude, location_name, contact_name, contact_phone, status, urgency)
+VALUES
+  ('need', 'water', 'Família precisa de água potável', 'Somos 5 pessoas incluindo 2 crianças. Nossa casa foi danificada e não temos acesso a água limpa há 3 dias.', 10.5061, -66.9146, 'Caracas, El Hatillo', 'María González', '+58 412-3456789', 'pending', 5),
+  ('need', 'shelter', 'Abrigo temporário para família de 8', 'Casa desabou parcialmente após o terremoto. Precisamos de abrigo urgente.', 10.634, -71.634, 'Maracaibo, Zulia', 'José Pérez', '+58 424-5678901', 'pending', 5),
+  ('need', 'medicine', 'Insulina para diabético idoso', 'Meu pai tem 78 anos e precisa de insulina. Farmácias locais estão sem estoque.', 9.899, -67.357, 'Valencia, Carabobo', 'Carmen Ruiz', '+58 416-7890123', 'pending', 5),
+  ('need', 'food', 'Cesta básica para comunidade atingida', 'Cerca de 30 famílias no bairro Los Robles perderam suas reservas de comida.', 10.25, -67.6, 'Los Teques, Miranda', 'Comité Comunitário Los Robles', '+58 412-1112233', 'pending', 4),
+  ('need', 'rescue', 'Possível sobrevivente em escombros', 'Ouvimos barulhos vindo dos escombros de um prédio de 3 andares na Av. Bolívar.', 10.64, -71.62, 'Maracaibo, Centro', 'Bombeiros Voluntários', '+58 261-5556677', 'in_progress', 5),
+  ('offer', 'water', 'Doação de 200 garrafões de água', 'Empresa de água mineral doando 200 garrafões de 20L. Podemos entregar em Caracas.', 10.488, -66.879, 'Caracas, Chacao', 'Distribuidora Agua Pura', '+58 212-3334455', 'pending', 2),
+  ('offer', 'shelter', 'Casa disponível para 4 pessoas', 'Tenho um quarto vazio em casa segura. Posso hospedar até 4 pessoas por 2 semanas.', 10.38, -66.97, 'San Antonio de Los Altos', 'Luisa Herrera', '+58 414-8889990', 'pending', 1),
+  ('offer', 'volunteer', 'Equipe de médicos voluntários', 'Somos 3 médicos e 2 enfermeiros disponíveis para atendimento gratuito em áreas afetadas.', 10.65, -71.61, 'Maracaibo, Zulia', 'Dr. Andrés Medina', '+58 261-2223344', 'pending', 2),
+  ('offer', 'transport', 'Caminhão para transporte de doações', 'Caminhão de carga disponível para transportar suprimentos entre Caracas e regiões afetadas.', 10.49, -66.83, 'Caracas, Sucre', 'Transporte Solidario', '+58 412-7778899', 'pending', 2),
+  ('offer', 'food', '100 marmitas prontas para doação', 'Restaurante comunitário preparou 100 refeições quentes. Podemos entregar em pontos de coleta.', 10.23, -67.58, 'Los Teques, Miranda', 'Cozinha Comunitaria Esperanza', '+58 212-4445566', 'in_progress', 2);
