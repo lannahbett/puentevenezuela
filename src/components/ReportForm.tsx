@@ -11,9 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createReport } from "@/lib/reports.functions";
+import { createReport, type listReports } from "@/lib/reports.functions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+
+type ReportRow = Awaited<ReturnType<typeof listReports>>[number];
 
 const categories = [
   { value: "water", label: "Água" },
