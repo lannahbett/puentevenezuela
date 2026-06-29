@@ -39,12 +39,6 @@ const assignSchema = z.object({
   assigned_to_contact: z.string().min(1).max(200),
 });
 
-// unused stub placeholder removed
-function _noop() {
-  return null;
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
 
 export const listReports = createServerFn({ method: "GET" }).handler(async () => {
   const { createClient } = await import("@supabase/supabase-js");
