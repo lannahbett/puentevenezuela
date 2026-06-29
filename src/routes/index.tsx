@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo, Suspense } from "react";
 import { MapView } from "@/components/MapView";
 import { ReportCard } from "@/components/ReportCard";
@@ -16,9 +16,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Puente Venezuela — Mapa de Necessidades e Ajuda" },
-      { name: "description", content: "Mapa interativo de necessidades e ofertas de ajuda para as vítimas dos terremotos na Venezuela." },
+      {
+        name: "description",
+        content:
+          "Mapa interativo de necessidades e ofertas de ajuda para as vítimas dos terremotos na Venezuela.",
+      },
       { property: "og:title", content: "Puente Venezuela — Mapa de Necessidades e Ajuda" },
-      { property: "og:description", content: "Encontre ou ofereça ajuda em tempo real após os terremotos na Venezuela." },
+      {
+        property: "og:description",
+        content: "Encontre ou ofereça ajuda em tempo real após os terremotos na Venezuela.",
+      },
     ],
   }),
   component: IndexPage,
@@ -48,7 +55,9 @@ function ReportsList({
     <div className="space-y-3">
       {reports.length === 0 && (
         <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">Nenhum relato encontrado com os filtros selecionados.</p>
+          <p className="text-sm text-muted-foreground">
+            Nenhum relato encontrado com os filtros selecionados.
+          </p>
         </div>
       )}
       {reports.map((report) => (
@@ -92,7 +101,7 @@ function StatsBar({ reports }: { reports: Report[] }) {
 }
 
 function IndexPageContent() {
-  const { data: reports = [] } = useSuspenseQuery({
+  const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
     queryFn: () => listReports(),
   });
@@ -129,7 +138,9 @@ function IndexPageContent() {
               <button
                 onClick={() => setTypeFilter("all")}
                 className={`px-3 py-1.5 text-xs font-medium ${
-                  typeFilter === "all" ? "bg-primary text-primary-foreground" : "bg-background text-muted-foreground hover:bg-muted"
+                  typeFilter === "all"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-muted-foreground hover:bg-muted"
                 }`}
               >
                 Todos
@@ -137,7 +148,9 @@ function IndexPageContent() {
               <button
                 onClick={() => setTypeFilter("need")}
                 className={`px-3 py-1.5 text-xs font-medium border-l border-border ${
-                  typeFilter === "need" ? "bg-destructive text-destructive-foreground" : "bg-background text-muted-foreground hover:bg-muted"
+                  typeFilter === "need"
+                    ? "bg-destructive text-destructive-foreground"
+                    : "bg-background text-muted-foreground hover:bg-muted"
                 }`}
               >
                 Necessidades
@@ -145,7 +158,9 @@ function IndexPageContent() {
               <button
                 onClick={() => setTypeFilter("offer")}
                 className={`px-3 py-1.5 text-xs font-medium border-l border-border ${
-                  typeFilter === "offer" ? "bg-emerald-600 text-white" : "bg-background text-muted-foreground hover:bg-muted"
+                  typeFilter === "offer"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-background text-muted-foreground hover:bg-muted"
                 }`}
               >
                 Ofertas
@@ -178,7 +193,9 @@ function IndexPageContent() {
         <button
           onClick={() => setMobileView("map")}
           className={`flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium ${
-            mobileView === "map" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"
+            mobileView === "map"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
           }`}
         >
           <MapIcon className="h-3.5 w-3.5" /> Mapa
@@ -186,7 +203,9 @@ function IndexPageContent() {
         <button
           onClick={() => setMobileView("list")}
           className={`flex-1 flex items-center justify-center gap-1 py-2 text-xs font-medium ${
-            mobileView === "list" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"
+            mobileView === "list"
+              ? "border-b-2 border-primary text-primary"
+              : "text-muted-foreground"
           }`}
         >
           <List className="h-3.5 w-3.5" /> Lista ({filteredReports.length})
@@ -232,15 +251,5 @@ function IndexPageContent() {
 }
 
 function IndexPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-[calc(100vh-3.5rem)] items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </div>
-      }
-    >
-      <IndexPageContent />
-    </Suspense>
-  );
+  return <IndexPageContent />;
 }

@@ -17,7 +17,10 @@ export function Header() {
           <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
             Mapa
           </Link>
-          <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+          <Link
+            to="/about"
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
             Sobre
           </Link>
         </nav>

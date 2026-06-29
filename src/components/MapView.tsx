@@ -14,9 +14,7 @@ function FitBounds({ reports }: { reports: Report[] }) {
   const map = useMap();
   useEffect(() => {
     if (reports.length === 0) return;
-    const group = L.featureGroup(
-      reports.map((r) => L.marker([r.latitude, r.longitude]))
-    );
+    const group = L.featureGroup(reports.map((r) => L.marker([r.latitude, r.longitude])));
     map.fitBounds(group.getBounds().pad(0.15), { animate: true });
   }, [map, reports]);
   return null;
@@ -68,12 +66,7 @@ export function MapView({ reports, onSelectReport }: MapViewProps) {
   const center = useMemo(() => [10.48, -66.9] as [number, number], []);
 
   return (
-    <MapContainer
-      center={center}
-      zoom={7}
-      scrollWheelZoom={true}
-      className="h-full w-full z-0"
-    >
+    <MapContainer center={center} zoom={7} scrollWheelZoom={true} className="h-full w-full z-0">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -92,9 +85,13 @@ export function MapView({ reports, onSelectReport }: MapViewProps) {
             <div className="min-w-[200px]">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">{categoryIcons[report.category]}</span>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                  report.type === "need" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-                }`}>
+                <span
+                  className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                    report.type === "need"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
                   {report.type === "need" ? "Necessidade" : "Oferta"}
                 </span>
               </div>

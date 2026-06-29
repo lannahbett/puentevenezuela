@@ -165,11 +165,21 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="latitude">Latitude *</Label>
-              <Input id="latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} required />
+              <Input
+                id="latitude"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
+                required
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="longitude">Longitude *</Label>
-              <Input id="longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} required />
+              <Input
+                id="longitude"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
+                required
+              />
             </div>
           </div>
 
@@ -201,17 +211,30 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
 
           <div className="space-y-2">
             <Label htmlFor="contactName">Nome de contato</Label>
-            <Input id="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} />
+            <Input
+              id="contactName"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="contactPhone">Telefone</Label>
-              <Input id="contactPhone" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+              <Input
+                id="contactPhone"
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="contactEmail">Email</Label>
-              <Input id="contactEmail" type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+              <Input
+                id="contactEmail"
+                type="email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+              />
             </div>
           </div>
 

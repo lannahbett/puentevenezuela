@@ -5,7 +5,10 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "Sobre — Puente Venezuela" },
-      { name: "description", content: "Plataforma de coordenação humanitária para o hackathon Build4Venezuela." },
+      {
+        name: "description",
+        content: "Plataforma de coordenação humanitária para o hackathon Build4Venezuela.",
+      },
     ],
   }),
   component: AboutPage,
@@ -64,11 +67,20 @@ function AboutPage() {
           <section className="rounded-xl border border-border bg-card p-6">
             <h2 className="text-xl font-semibold text-foreground mb-3">Sobre o hackathon</h2>
             <p className="text-muted-foreground leading-relaxed">
-              O <a href="https://build4venezuela.com/en" target="_blank" rel="noopener noreferrer" className="underline text-primary">Build4Venezuela</a>{" "}
-              é um hackathon humanitário global realizado nos dias 26, 27 e 28 de junho de 2026.
-              Os terremotos que atingiram a Venezuela em 24 de junho causaram mais de 188 mortes
-              e 1.500 feridos. Equipes de resgate ainda buscam sobreviventes, e comunidades inteiras
-              precisam de apoio. Tecnologia, usada com urgência e sem ruído, pode ser uma forma de solidariedade.
+              O{" "}
+              <a
+                href="https://build4venezuela.com/en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-primary"
+              >
+                Build4Venezuela
+              </a>{" "}
+              é um hackathon humanitário global realizado nos dias 26, 27 e 28 de junho de 2026. Os
+              terremotos que atingiram a Venezuela em 24 de junho causaram mais de 188 mortes e
+              1.500 feridos. Equipes de resgate ainda buscam sobreviventes, e comunidades inteiras
+              precisam de apoio. Tecnologia, usada com urgência e sem ruído, pode ser uma forma de
+              solidariedade.
             </p>
           </section>
 
@@ -76,8 +88,8 @@ function AboutPage() {
             <h2 className="text-xl font-semibold text-foreground mb-3">Dados e privacidade</h2>
             <p className="text-muted-foreground leading-relaxed">
               Todos os relatos são públicos para maximizar a visibilidade das necessidades.
-              Informações de contato são opcionais e de responsabilidade de quem publica.
-              Não armazenamos dados sensíveis de saúde ou documentos.
+              Informações de contato são opcionais e de responsabilidade de quem publica. Não
+              armazenamos dados sensíveis de saúde ou documentos.
             </p>
           </section>
         </div>
