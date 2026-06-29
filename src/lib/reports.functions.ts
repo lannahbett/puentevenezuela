@@ -122,5 +122,3 @@ export const assignReport = createServerFn({ method: "POST" })
     return result;
   });
 
-// helper to suppress unused
-void client;
