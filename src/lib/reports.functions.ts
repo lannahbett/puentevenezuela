@@ -39,14 +39,9 @@ const assignSchema = z.object({
   assigned_to_contact: z.string().min(1).max(200),
 });
 
-function client() {
-  // dynamic import to keep server-only code out of client bundle
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key) throw new Error("Missing Supabase config");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { createClient } = require("@supabase/supabase-js");
-  return createClient(url, key, {
+// unused stub placeholder removed
+function _noop() {
+  return null;
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
