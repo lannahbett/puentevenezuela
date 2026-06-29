@@ -122,6 +122,100 @@ const dict: Dict = {
     en: "All reports are public to maximize visibility. Contact details are optional and the responsibility of the publisher. We do not store sensitive health data or documents.",
   },
   back: { es: "Volver al mapa", en: "Back to map" },
+  // Nav
+  nav_home: { es: "Inicio", en: "Home" },
+  // Landing
+  landing_heroTitle: {
+    es: "Cada minuto cuenta. Cada ayuda llega.",
+    en: "Every minute counts. Every helping hand arrives.",
+  },
+  landing_heroSubtitle: {
+    es: "Puente conecta en tiempo real a quienes necesitan ayuda con quienes pueden brindarla, tras los terremotos en Venezuela.",
+    en: "Puente connects people who need help with those who can offer it in real time, after the earthquakes in Venezuela.",
+  },
+  landing_ctaMap: { es: "Ver el mapa", en: "Open the map" },
+  landing_ctaReport: { es: "Reportar ayuda", en: "Report help" },
+  landing_statsTitle: { es: "Coordinación en tiempo real", en: "Real-time coordination" },
+  landing_stat_active: { es: "Reportes activos", en: "Active reports" },
+  landing_stat_resolved: { es: "Casos resueltos", en: "Cases resolved" },
+  landing_stat_volunteers: { es: "Voluntarios activos", en: "Active volunteers" },
+  landing_howTitle: { es: "Cómo funciona", en: "How it works" },
+  landing_howSubtitle: {
+    es: "Tres pasos simples para que la ayuda llegue donde se necesita.",
+    en: "Three simple steps to get help where it's needed.",
+  },
+  landing_step1: { es: "1. Reporta", en: "1. Report" },
+  landing_step1Body: {
+    es: "Marca en el mapa una necesidad o una oferta. Sin registro, sin trámites.",
+    en: "Pin a need or an offer on the map. No signup, no paperwork.",
+  },
+  landing_step2: { es: "2. Conecta", en: "2. Match" },
+  landing_step2Body: {
+    es: "El sistema sugiere coincidencias cercanas por categoría y distancia.",
+    en: "The system suggests nearby matches by category and distance.",
+  },
+  landing_step3: { es: "3. Atiende", en: "3. Act" },
+  landing_step3Body: {
+    es: "Voluntarios se hacen cargo, comparten fotos y actualizan el estado.",
+    en: "Volunteers take ownership, share photos, and update the status.",
+  },
+  landing_forWhoTitle: { es: "Para quién es", en: "Who it's for" },
+  landing_for_victims: { es: "Afectados", en: "Affected people" },
+  landing_for_victimsBody: {
+    es: "Pide agua, comida, refugio o rescate y déjalo visible para todos.",
+    en: "Request water, food, shelter or rescue — visible to everyone.",
+  },
+  landing_for_volunteers: { es: "Voluntarios", en: "Volunteers" },
+  landing_for_volunteersBody: {
+    es: "Encuentra dónde tu ayuda hace la mayor diferencia hoy.",
+    en: "Find where your help makes the biggest difference today.",
+  },
+  landing_for_ngos: { es: "ONGs y autoridades", en: "NGOs and authorities" },
+  landing_for_ngosBody: {
+    es: "Visualiza la demanda real para coordinar recursos sin duplicación.",
+    en: "See real demand to coordinate resources without duplication.",
+  },
+  landing_categoriesTitle: { es: "Categorías cubiertas", en: "Categories covered" },
+  landing_emergencyTitle: { es: "¿Es una emergencia?", en: "Is it an emergency?" },
+  landing_emergencyBody: {
+    es: "Si hay riesgo de vida, llama primero a los números oficiales.",
+    en: "If there's a life-threatening risk, call official numbers first.",
+  },
+  landing_emergencyCta: { es: "Ver contactos de emergencia", en: "View emergency contacts" },
+  landing_aboutTitle: { es: "Nuestra misión", en: "Our mission" },
+  landing_aboutBody: {
+    es: "Tras los terremotos, la información dispersa cuesta vidas. Puente reúne en un solo mapa lo que cada comunidad necesita y lo que cada vecino puede ofrecer, para que ninguna ayuda se pierda.",
+    en: "After the earthquakes, scattered information costs lives. Puente brings together on a single map what each community needs and what each neighbor can offer, so no help is wasted.",
+  },
+  landing_footerRights: { es: "Una plataforma abierta para la comunidad.", en: "An open platform for the community." },
+  // Filters
+  filter_search: { es: "Buscar...", en: "Search..." },
+  filter_searchPlaceholder: {
+    es: "Buscar título, descripción o lugar",
+    en: "Search title, description or place",
+  },
+  filter_status: { es: "Estado", en: "Status" },
+  filter_period: { es: "Período", en: "Period" },
+  filter_period_24h: { es: "Últimas 24h", en: "Last 24h" },
+  filter_period_7d: { es: "Últimos 7 días", en: "Last 7 days" },
+  filter_period_30d: { es: "Últimos 30 días", en: "Last 30 days" },
+  filter_period_all: { es: "Todo el tiempo", en: "All time" },
+  filter_minUrgency: { es: "Urgencia mín.", en: "Min. urgency" },
+  filter_withPhotos: { es: "Sólo con fotos", en: "Only with photos" },
+  filter_clear: { es: "Limpiar filtros", en: "Clear filters" },
+  filter_results: { es: "{n} resultados", en: "{n} results" },
+  filter_more: { es: "Más filtros", en: "More filters" },
+  filter_apply: { es: "Aplicar", en: "Apply" },
+  // Attachments
+  photos: { es: "Fotos", en: "Photos" },
+  addPhotos: { es: "Agregar fotos", en: "Add photos" },
+  photoLimit: { es: "Hasta 5 fotos · máx 5MB cada una", en: "Up to 5 photos · max 5MB each" },
+  removePhoto: { es: "Quitar", en: "Remove" },
+  uploadingPhotos: { es: "Subiendo fotos...", en: "Uploading photos..." },
+  // Offline
+  offline: { es: "Sin conexión", en: "Offline" },
+};
+
 };
 
 type I18nCtx = {
