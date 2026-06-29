@@ -81,9 +81,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Puente Venezuela — Coordenação Humanitária" },
-      { name: "description", content: "Plataforma de coordenação humanitária para conectar necessidades e ofertas de ajuda após os terremotos na Venezuela." },
+      {
+        name: "description",
+        content:
+          "Plataforma de coordenação humanitária para conectar necessidades e ofertas de ajuda após os terremotos na Venezuela.",
+      },
       { property: "og:title", content: "Puente Venezuela" },
-      { property: "og:description", content: "Conecte necessidades e ofertas de ajuda em tempo real após os terremotos na Venezuela." },
+      {
+        property: "og:description",
+        content:
+          "Conecte necessidades e ofertas de ajuda em tempo real após os terremotos na Venezuela.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

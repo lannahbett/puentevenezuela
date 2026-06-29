@@ -55,7 +55,9 @@ export function ReportCard({ report, onClick, isSelected }: ReportCardProps) {
             {categoryLabels[report.category] ?? report.category}
           </span>
         </div>
-        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusClasses[report.status]}`}>
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusClasses[report.status]}`}
+        >
           {statusLabels[report.status]}
         </span>
       </div>

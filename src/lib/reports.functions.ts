@@ -38,23 +38,21 @@ const updateSchema = z.object({
   contact_email: z.string().email().max(200).optional(),
 });
 
-export const listReports = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-    if (!url || !key) throw new Error("Missing Supabase config");
-    const supabase = createClient(url, key, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-    const { data, error } = await supabase
-      .from("reports")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    return data ?? [];
-  }
-);
+export const listReports = createServerFn({ method: "GET" }).handler(async () => {
+  const { createClient } = await import("@supabase/supabase-js");
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) throw new Error("Missing Supabase config");
+  const supabase = createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { data, error } = await supabase
+    .from("reports")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return data ?? [];
+});
 
 export const createReport = createServerFn({ method: "POST" })
   .inputValidator((data) => reportSchema.parse(data))
@@ -67,11 +65,7 @@ export const createReport = createServerFn({ method: "POST" })
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { data: result, error } = await supabase
-      .from("reports")
-      .insert(data)
-      .select()
-      .single();
+    const { data: result, error } = await supabase.from("reports").insert(data).select().single();
     if (error) throw new Error(error.message);
     return result;
   });
