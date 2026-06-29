@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo, Suspense } from "react";
 import { MapView } from "@/components/MapView";
 import { ReportCard } from "@/components/ReportCard";
