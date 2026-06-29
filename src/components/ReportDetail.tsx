@@ -124,6 +124,9 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
             <p className="text-sm text-foreground/80">{report.description}</p>
           )}
 
+          <AttachmentsGallery reportId={report.id} variant="full" />
+
+
           <div className="grid gap-2 text-sm">
             {report.location_name && (
               <div className="flex items-center gap-2 text-muted-foreground">
