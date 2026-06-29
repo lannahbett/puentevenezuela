@@ -216,7 +216,6 @@ const dict: Dict = {
   offline: { es: "Sin conexión", en: "Offline" },
 };
 
-};
 
 type I18nCtx = {
   lang: Lang;
