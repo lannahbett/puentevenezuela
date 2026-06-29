@@ -142,3 +142,19 @@
     color: var(--color-foreground);
   }
 }
+
+/* Keep Leaflet below sticky header, dialogs, and sheets */
+.leaflet-container {
+  z-index: 0 !important;
+}
+.leaflet-pane,
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1 !important;
+}
+.leaflet-control {
+  z-index: 2 !important;
+}
+.leaflet-popup-pane {
+  z-index: 3 !important;
+}

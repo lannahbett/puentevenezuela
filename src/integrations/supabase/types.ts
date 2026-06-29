@@ -16,6 +16,9 @@ export type Database = {
     Tables: {
       reports: {
         Row: {
+          assigned_at: string | null
+          assigned_to_contact: string | null
+          assigned_to_name: string | null
           category: Database["public"]["Enums"]["report_category"]
           contact_email: string | null
           contact_name: string | null
@@ -34,6 +37,9 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          assigned_at?: string | null
+          assigned_to_contact?: string | null
+          assigned_to_name?: string | null
           category: Database["public"]["Enums"]["report_category"]
           contact_email?: string | null
           contact_name?: string | null
@@ -52,6 +58,9 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          assigned_at?: string | null
+          assigned_to_contact?: string | null
+          assigned_to_name?: string | null
           category?: Database["public"]["Enums"]["report_category"]
           contact_email?: string | null
           contact_name?: string | null

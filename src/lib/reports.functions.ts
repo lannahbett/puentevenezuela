@@ -28,15 +28,17 @@ const reportSchema = z.object({
   urgency: z.number().int().min(1).max(5).default(3),
 });
 
-const updateSchema = z.object({
+const statusSchema = z.object({
   id: z.string().uuid(),
-  status: reportStatusEnum.optional(),
-  title: z.string().min(1).max(200).optional(),
-  description: z.string().max(2000).optional(),
-  contact_name: z.string().max(200).optional(),
-  contact_phone: z.string().max(50).optional(),
-  contact_email: z.string().email().max(200).optional(),
+  status: reportStatusEnum,
 });
+
+const assignSchema = z.object({
+  id: z.string().uuid(),
+  assigned_to_name: z.string().min(1).max(200),
+  assigned_to_contact: z.string().min(1).max(200),
+});
+
 
 export const listReports = createServerFn({ method: "GET" }).handler(async () => {
   const { createClient } = await import("@supabase/supabase-js");
@@ -64,14 +66,17 @@ export const createReport = createServerFn({ method: "POST" })
     const supabase = createClient(url, key, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
-
-    const { data: result, error } = await supabase.from("reports").insert(data).select().single();
+    const { data: result, error } = await supabase
+      .from("reports")
+      .insert(data)
+      .select()
+      .single();
     if (error) throw new Error(error.message);
     return result;
   });
 
-export const updateReport = createServerFn({ method: "POST" })
-  .inputValidator((data) => updateSchema.parse(data))
+export const updateStatus = createServerFn({ method: "POST" })
+  .inputValidator((data) => statusSchema.parse(data))
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
     const url = process.env.SUPABASE_URL;
@@ -80,14 +85,40 @@ export const updateReport = createServerFn({ method: "POST" })
     const supabase = createClient(url, key, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
-
-    const { id, ...updates } = data;
+    const { id, status } = data;
     const { data: result, error } = await supabase
       .from("reports")
-      .update(updates)
+      .update({ status })
       .eq("id", id)
       .select()
       .single();
     if (error) throw new Error(error.message);
     return result;
   });
+
+export const assignReport = createServerFn({ method: "POST" })
+  .inputValidator((data) => assignSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { createClient } = await import("@supabase/supabase-js");
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
+    if (!url || !key) throw new Error("Missing Supabase config");
+    const supabase = createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { id, assigned_to_name, assigned_to_contact } = data;
+    const { data: result, error } = await supabase
+      .from("reports")
+      .update({
+        assigned_to_name,
+        assigned_to_contact,
+        assigned_at: new Date().toISOString(),
+        status: "in_progress",
+      })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return result;
+  });
+

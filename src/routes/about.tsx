@@ -1,13 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Heart, MapPin, Users, Radio } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { MapPin, Users, Radio, Heart } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import logoUrl from "@/assets/logo.png";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Sobre — Puente Venezuela" },
+      { title: "Acerca de — Puente Venezuela" },
       {
         name: "description",
-        content: "Plataforma de coordenação humanitária para o hackathon Build4Venezuela.",
+        content:
+          "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela.",
       },
     ],
   }),
@@ -15,85 +18,61 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-12">
         <div className="text-center mb-10">
-          <Heart className="mx-auto h-10 w-10 text-destructive mb-4" />
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Puente Venezuela</h1>
-          <p className="mt-2 text-muted-foreground">
-            Construído com urgência para o hackathon Build4Venezuela
-          </p>
+          <img src={logoUrl} alt="" width={64} height={64} className="mx-auto h-16 w-16" />
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
+            {t("appName")}
+          </h1>
+          <p className="mt-2 text-muted-foreground">{t("tagline")}</p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
           <section className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-3">O que é esta plataforma?</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Puente Venezuela é uma plataforma web de coordenação humanitária criada para conectar
-              pessoas afetadas pelos terremotos de 24 de junho na Venezuela com quem pode ajudar.
-              Nosso foco é tornar visível — em tempo real e no mapa — as necessidades reais e as
-              ofertas de ajuda, reduzindo o desperdício de recursos e acelerando o socorro.
-            </p>
+            <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+              <Heart className="h-5 w-5 text-destructive" />
+              {t("about_what")}
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">{t("about_whatBody")}</p>
           </section>
 
           <section className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Como funciona</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t("about_how")}</h2>
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="flex flex-col items-center text-center p-4">
-                <MapPin className="h-8 w-8 text-primary mb-3" />
-                <h3 className="font-medium text-foreground">Mapeie</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Relate necessidades ou ofertas de ajuda diretamente no mapa.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-4">
-                <Users className="h-8 w-8 text-primary mb-3" />
-                <h3 className="font-medium text-foreground">Conecte</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Doadores e voluntários encontram quem precisa de ajuda na mesma região.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center p-4">
-                <Radio className="h-8 w-8 text-primary mb-3" />
-                <h3 className="font-medium text-foreground">Acompanhe</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Status em tempo real: pendente, em andamento ou resolvido.
-                </p>
-              </div>
+              <Step icon={<MapPin className="h-7 w-7 text-primary" />} title={t("about_step1")} body={t("about_step1Body")} />
+              <Step icon={<Users className="h-7 w-7 text-primary" />} title={t("about_step2")} body={t("about_step2Body")} />
+              <Step icon={<Radio className="h-7 w-7 text-primary" />} title={t("about_step3")} body={t("about_step3Body")} />
             </div>
           </section>
 
           <section className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-3">Sobre o hackathon</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              O{" "}
-              <a
-                href="https://build4venezuela.com/en"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline text-primary"
-              >
-                Build4Venezuela
-              </a>{" "}
-              é um hackathon humanitário global realizado nos dias 26, 27 e 28 de junho de 2026. Os
-              terremotos que atingiram a Venezuela em 24 de junho causaram mais de 188 mortes e
-              1.500 feridos. Equipes de resgate ainda buscam sobreviventes, e comunidades inteiras
-              precisam de apoio. Tecnologia, usada com urgência e sem ruído, pode ser uma forma de
-              solidariedade.
-            </p>
+            <h2 className="text-xl font-semibold text-foreground mb-3">{t("about_privacy")}</h2>
+            <p className="text-muted-foreground leading-relaxed">{t("about_privacyBody")}</p>
           </section>
 
-          <section className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-3">Dados e privacidade</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Todos os relatos são públicos para maximizar a visibilidade das necessidades.
-              Informações de contato são opcionais e de responsabilidade de quem publica. Não
-              armazenamos dados sensíveis de saúde ou documentos.
-            </p>
-          </section>
+          <div className="text-center">
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              ← {t("back")}
+            </Link>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function Step({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
+  return (
+    <div className="flex flex-col items-center text-center p-4">
+      <div className="mb-3">{icon}</div>
+      <h3 className="font-semibold text-foreground">{title}</h3>
+      <p className="text-sm text-muted-foreground mt-1">{body}</p>
     </div>
   );
 }
