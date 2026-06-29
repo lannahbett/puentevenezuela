@@ -20,6 +20,8 @@ import {
   RotateCcw,
   HandHeart,
 } from "lucide-react";
+import { AttachmentsGallery } from "./AttachmentsGallery";
+
 
 type Report = Tables<"reports">;
 
