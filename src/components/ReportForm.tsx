@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createReport } from "@/lib/reports.functions";
+import { uploadAttachment } from "@/lib/upload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { MapPin } from "lucide-react";
+import { MapPin, ImagePlus, X } from "lucide-react";
+
 
 const CATEGORIES = [
   "water",
