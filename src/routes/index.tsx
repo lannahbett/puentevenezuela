@@ -1,110 +1,55 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo, Suspense } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useMemo, useEffect } from "react";
 import { MapView } from "@/components/MapView";
 import { ReportCard } from "@/components/ReportCard";
 import { ReportForm } from "@/components/ReportForm";
+import { ReportDetail } from "@/components/ReportDetail";
 import { listReports } from "@/lib/reports.functions";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Filter, Map as MapIcon, List, BarChart3 } from "lucide-react";
+import { Plus, Map as MapIcon, List, AlertCircle, HandHeart } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
+import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 
 type Report = Tables<"reports">;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Puente Venezuela — Mapa de Necessidades e Ajuda" },
+      { title: "Puente Venezuela — Mapa de ayuda" },
       {
         name: "description",
         content:
-          "Mapa interativo de necessidades e ofertas de ajuda para as vítimas dos terremotos na Venezuela.",
-      },
-      { property: "og:title", content: "Puente Venezuela — Mapa de Necessidades e Ajuda" },
-      {
-        property: "og:description",
-        content: "Encontre ou ofereça ajuda em tempo real após os terremotos na Venezuela.",
+          "Mapa interactivo de necesidades y ofertas de ayuda tras los terremotos en Venezuela.",
       },
     ],
   }),
   component: IndexPage,
 });
 
-const categoryLabels: Record<string, string> = {
-  water: "Água",
-  food: "Comida",
-  shelter: "Abrigo",
-  medicine: "Medicamentos",
-  rescue: "Resgate",
-  volunteer: "Voluntário",
-  transport: "Transporte",
-  other: "Outro",
-};
-
-function ReportsList({
-  reports,
-  selectedId,
-  onSelect,
-}: {
-  reports: Report[];
-  selectedId: string | null;
-  onSelect: (r: Report) => void;
-}) {
-  return (
-    <div className="space-y-3">
-      {reports.length === 0 && (
-        <div className="rounded-lg border border-dashed border-border p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Nenhum relato encontrado com os filtros selecionados.
-          </p>
-        </div>
-      )}
-      {reports.map((report) => (
-        <ReportCard
-          key={report.id}
-          report={report}
-          isSelected={selectedId === report.id}
-          onClick={() => onSelect(report)}
-        />
-      ))}
-    </div>
-  );
-}
-
-function StatsBar({ reports }: { reports: Report[] }) {
-  const needs = reports.filter((r) => r.type === "need").length;
-  const offers = reports.filter((r) => r.type === "offer").length;
-  const inProgress = reports.filter((r) => r.status === "in_progress").length;
-  const resolved = reports.filter((r) => r.status === "resolved").length;
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Badge variant="outline" className="text-xs">
-        <BarChart3 className="mr-1 h-3 w-3" />
-        {reports.length} relatos
-      </Badge>
-      <Badge variant="outline" className="text-xs text-destructive">
-        {needs} necessidades
-      </Badge>
-      <Badge variant="outline" className="text-xs text-emerald-600">
-        {offers} ofertas
-      </Badge>
-      <Badge variant="outline" className="text-xs text-primary">
-        {inProgress} em andamento
-      </Badge>
-      <Badge variant="outline" className="text-xs text-green-600">
-        {resolved} resolvidos
-      </Badge>
-    </div>
-  );
-}
-
-function IndexPageContent() {
-  const { data: reports = [], isLoading } = useQuery({
+function IndexPage() {
+  const { t } = useI18n();
+  const qc = useQueryClient();
+  const { data: reports = [] } = useQuery({
     queryKey: ["reports"],
     queryFn: () => listReports(),
   });
+
+  // realtime
+  useEffect(() => {
+    const ch = supabase
+      .channel("reports-rt")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reports" },
+        () => qc.invalidateQueries({ queryKey: ["reports"] }),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
 
   const [typeFilter, setTypeFilter] = useState<"all" | "need" | "offer">("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -112,13 +57,15 @@ function IndexPageContent() {
   const [formOpen, setFormOpen] = useState(false);
   const [mobileView, setMobileView] = useState<"map" | "list">("map");
 
-  const filteredReports = useMemo(() => {
-    return reports.filter((r) => {
-      if (typeFilter !== "all" && r.type !== typeFilter) return false;
-      if (categoryFilter !== "all" && r.category !== categoryFilter) return false;
-      return true;
-    });
-  }, [reports, typeFilter, categoryFilter]);
+  const filteredReports = useMemo(
+    () =>
+      reports.filter((r) => {
+        if (typeFilter !== "all" && r.type !== typeFilter) return false;
+        if (categoryFilter !== "all" && r.category !== categoryFilter) return false;
+        return true;
+      }),
+    [reports, typeFilter, categoryFilter],
+  );
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -126,65 +73,75 @@ function IndexPageContent() {
     return Array.from(set).sort();
   }, [reports]);
 
+  const needs = reports.filter((r) => r.type === "need").length;
+  const offers = reports.filter((r) => r.type === "offer").length;
+
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      {/* Toolbar */}
-      <div className="border-b border-border bg-background px-4 py-3">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <StatsBar reports={reports} />
-
-          <div className="flex items-center gap-2">
-            <div className="flex rounded-md border border-border overflow-hidden">
-              <button
-                onClick={() => setTypeFilter("all")}
-                className={`px-3 py-1.5 text-xs font-medium ${
-                  typeFilter === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                Todos
-              </button>
-              <button
-                onClick={() => setTypeFilter("need")}
-                className={`px-3 py-1.5 text-xs font-medium border-l border-border ${
-                  typeFilter === "need"
-                    ? "bg-destructive text-destructive-foreground"
-                    : "bg-background text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                Necessidades
-              </button>
-              <button
-                onClick={() => setTypeFilter("offer")}
-                className={`px-3 py-1.5 text-xs font-medium border-l border-border ${
-                  typeFilter === "offer"
-                    ? "bg-emerald-600 text-white"
-                    : "bg-background text-muted-foreground hover:bg-muted"
-                }`}
-              >
-                Ofertas
-              </button>
-            </div>
-
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="rounded-md border border-border bg-background px-2 py-1.5 text-xs text-foreground"
-            >
-              <option value="all">Todas categorias</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {categoryLabels[c] ?? c}
-                </option>
-              ))}
-            </select>
-
-            <Button size="sm" onClick={() => setFormOpen(true)}>
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Relatar
-            </Button>
+      {/* Stats strip */}
+      <div className="border-b border-border bg-background px-3 py-2">
+        <div className="mx-auto max-w-7xl flex items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="flex items-center gap-1 text-destructive font-semibold">
+              <AlertCircle className="h-3.5 w-3.5" />
+              {needs}
+              <span className="hidden sm:inline font-normal text-muted-foreground">
+                {t("needs").toLowerCase()}
+              </span>
+            </span>
+            <span className="flex items-center gap-1 text-emerald-600 font-semibold">
+              <HandHeart className="h-3.5 w-3.5" />
+              {offers}
+              <span className="hidden sm:inline font-normal text-muted-foreground">
+                {t("offers").toLowerCase()}
+              </span>
+            </span>
+            <span className="text-muted-foreground hidden md:inline">
+              · {reports.length} {t("reportsCount")}
+            </span>
           </div>
+          <Button size="sm" onClick={() => setFormOpen(true)} className="h-8">
+            <Plus className="h-3.5 w-3.5" />
+            {t("report")}
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="border-b border-border bg-background px-3 py-2 overflow-x-auto">
+        <div className="mx-auto max-w-7xl flex items-center gap-2 min-w-max">
+          <div className="flex rounded-full border border-border overflow-hidden text-xs font-medium">
+            {(["all", "need", "offer"] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setTypeFilter(v)}
+                className={`px-3 py-1.5 transition-colors ${
+                  typeFilter === v
+                    ? v === "need"
+                      ? "bg-destructive text-destructive-foreground"
+                      : v === "offer"
+                        ? "bg-emerald-600 text-white"
+                        : "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted"
+                }`}
+              >
+                {v === "all" ? t("all") : v === "need" ? t("needs") : t("offers")}
+              </button>
+            ))}
+          </div>
+
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="rounded-full border border-border bg-background px-3 py-1.5 text-xs text-foreground"
+          >
+            <option value="all">{t("allCategories")}</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {t(`cat_${c}` as never)}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -198,7 +155,7 @@ function IndexPageContent() {
               : "text-muted-foreground"
           }`}
         >
-          <MapIcon className="h-3.5 w-3.5" /> Mapa
+          <MapIcon className="h-3.5 w-3.5" /> {t("mapView")}
         </button>
         <button
           onClick={() => setMobileView("list")}
@@ -208,48 +165,48 @@ function IndexPageContent() {
               : "text-muted-foreground"
           }`}
         >
-          <List className="h-3.5 w-3.5" /> Lista ({filteredReports.length})
+          <List className="h-3.5 w-3.5" /> {t("list")} ({filteredReports.length})
         </button>
       </div>
 
       {/* Content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Map */}
-        <div className={`flex-1 ${mobileView === "list" ? "hidden md:block" : "block"}`}>
+      <div className="flex flex-1 overflow-hidden relative">
+        <div className={`flex-1 relative ${mobileView === "list" ? "hidden md:block" : "block"}`}>
           <MapView
             reports={filteredReports}
-            onSelectReport={(r) => {
-              setSelectedReport(r);
-              setMobileView("list");
-            }}
+            onSelectReport={(r) => setSelectedReport(r)}
+            highlight={selectedReport}
           />
         </div>
 
-        {/* List */}
         <div
-          className={`w-full border-l border-border bg-background overflow-y-auto p-4 ${
+          className={`w-full border-l border-border bg-background overflow-y-auto p-3 space-y-2 ${
             mobileView === "map" ? "hidden md:block md:w-96" : "md:w-96"
           }`}
         >
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-foreground flex items-center gap-1">
-              <Filter className="h-3.5 w-3.5" />
-              Relatos ({filteredReports.length})
-            </h2>
-          </div>
-          <ReportsList
-            reports={filteredReports}
-            selectedId={selectedReport?.id ?? null}
-            onSelect={setSelectedReport}
-          />
+          {filteredReports.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border p-8 text-center">
+              <p className="text-sm text-muted-foreground">{t("noReports")}</p>
+            </div>
+          ) : (
+            filteredReports.map((report) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                isSelected={selectedReport?.id === report.id}
+                onClick={() => setSelectedReport(report)}
+              />
+            ))
+          )}
         </div>
       </div>
 
       <ReportForm open={formOpen} onOpenChange={setFormOpen} />
+      <ReportDetail
+        report={selectedReport}
+        allReports={reports}
+        onClose={() => setSelectedReport(null)}
+      />
     </div>
   );
-}
-
-function IndexPage() {
-  return <IndexPageContent />;
 }
