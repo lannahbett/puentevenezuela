@@ -92,7 +92,7 @@ function StatsBar({ reports }: { reports: Report[] }) {
 }
 
 function IndexPageContent() {
-  const { data: reports = [] } = useSuspenseQuery({
+  const { data: reports = [], isLoading } = useQuery({
     queryKey: ["reports"],
     queryFn: () => listReports(),
   });
