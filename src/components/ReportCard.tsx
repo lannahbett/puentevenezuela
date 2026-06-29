@@ -1,6 +1,8 @@
 import type { Tables } from "@/integrations/supabase/types";
 import { MapPin, Phone, User, Clock, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { AttachmentsGallery } from "./AttachmentsGallery";
+
 
 type Report = Tables<"reports">;
 
