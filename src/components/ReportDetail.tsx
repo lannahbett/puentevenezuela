@@ -20,6 +20,8 @@ import {
   RotateCcw,
   HandHeart,
 } from "lucide-react";
+import { AttachmentsGallery } from "./AttachmentsGallery";
+
 
 type Report = Tables<"reports">;
 
@@ -121,6 +123,9 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
           {report.description && (
             <p className="text-sm text-foreground/80">{report.description}</p>
           )}
+
+          <AttachmentsGallery reportId={report.id} variant="full" />
+
 
           <div className="grid gap-2 text-sm">
             {report.location_name && (

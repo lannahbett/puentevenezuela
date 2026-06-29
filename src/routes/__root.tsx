@@ -94,9 +94,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:description", content: "Shelter Response aids earthquake victims by facilitating resource allocation and communication." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1621d1cd-d08a-4565-bd57-fd9d23a8e484/id-preview-ac1e2552--12549d34-a5c3-48ea-80a2-093e356e3e92.lovable.app-1782692549471.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1621d1cd-d08a-4565-bd57-fd9d23a8e484/id-preview-ac1e2552--12549d34-a5c3-48ea-80a2-093e356e3e92.lovable.app-1782692549471.png" },
+      { name: "theme-color", content: "#0d9488" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -120,6 +127,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    import("@/lib/pwa-register").then((m) => m.registerPwa());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
@@ -134,3 +145,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+

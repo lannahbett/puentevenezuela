@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createReport } from "@/lib/reports.functions";
+import { uploadAttachment } from "@/lib/upload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { MapPin } from "lucide-react";
+import { MapPin, ImagePlus, X } from "lucide-react";
+
 
 const CATEGORIES = [
   "water",
@@ -49,11 +51,26 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [urgency, setUrgency] = useState("3");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const mutation = useMutation({
     mutationFn: createReport,
-    onSuccess: () => {
+    onSuccess: async (created) => {
+      if (photos.length && created?.id) {
+        setUploading(true);
+        try {
+          for (const file of photos) {
+            await uploadAttachment(created.id, file);
+          }
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Upload error");
+        }
+        setUploading(false);
+      }
       queryClient.invalidateQueries({ queryKey: ["reports"] });
+      queryClient.invalidateQueries({ queryKey: ["attachments", created.id] });
       toast.success(t("successReport"));
       resetForm();
       onOpenChange(false);
@@ -71,7 +88,24 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
     setContactPhone("");
     setContactEmail("");
     setUrgency("3");
+    setPhotos([]);
+    if (fileRef.current) fileRef.current.value = "";
   }
+
+  function handleFiles(files: FileList | null) {
+    if (!files) return;
+    const valid: File[] = [];
+    for (const f of Array.from(files)) {
+      if (!f.type.startsWith("image/")) continue;
+      if (f.size > 5 * 1024 * 1024) {
+        toast.error(`${f.name}: > 5MB`);
+        continue;
+      }
+      valid.push(f);
+    }
+    setPhotos((prev) => [...prev, ...valid].slice(0, 5));
+  }
+
 
   function useMyLocation() {
     if (!navigator.geolocation) {
@@ -231,9 +265,48 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={mutation.isPending}>
-            {mutation.isPending ? t("sending") : t("send")}
+          {/* Photos */}
+          <div className="space-y-2">
+            <Label>{t("photos")}</Label>
+            <p className="text-xs text-muted-foreground">{t("photoLimit")}</p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => handleFiles(e.target.files)}
+            />
+            <div className="flex flex-wrap gap-2">
+              {photos.map((file, i) => (
+                <div key={i} className="relative h-16 w-16 rounded-md overflow-hidden bg-muted">
+                  <img src={URL.createObjectURL(file)} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
+                    className="absolute top-0 right-0 bg-black/70 text-white rounded-bl p-0.5"
+                    aria-label={t("removePhoto")}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              {photos.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="h-16 w-16 rounded-md border-2 border-dashed border-border flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition"
+                >
+                  <ImagePlus className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full" disabled={mutation.isPending || uploading}>
+            {uploading ? t("uploadingPhotos") : mutation.isPending ? t("sending") : t("send")}
           </Button>
+
         </form>
       </DialogContent>
     </Dialog>

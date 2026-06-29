@@ -1,6 +1,8 @@
 import type { Tables } from "@/integrations/supabase/types";
 import { MapPin, Phone, User, Clock, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { AttachmentsGallery } from "./AttachmentsGallery";
+
 
 type Report = Tables<"reports">;
 
@@ -33,31 +35,37 @@ export function ReportCard({ report, onClick, isSelected, distanceLabel }: Repor
         isSelected ? "border-primary ring-1 ring-primary" : "border-border"
       }`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-              isNeed ? "bg-destructive/10 text-destructive" : "bg-emerald-100 text-emerald-700"
-            }`}
-          >
-            {isNeed ? t("need") : t("offer")}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {t(`cat_${report.category}` as never)}
-          </span>
+      <div className="flex items-start gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                  isNeed ? "bg-destructive/10 text-destructive" : "bg-emerald-100 text-emerald-700"
+                }`}
+              >
+                {isNeed ? t("need") : t("offer")}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {t(`cat_${report.category}` as never)}
+              </span>
+            </div>
+            <span
+              className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${statusClasses[report.status]}`}
+            >
+              {statusLabels[report.status]}
+            </span>
+          </div>
+
+          <h3 className="mt-2 font-semibold text-sm text-foreground line-clamp-2">{report.title}</h3>
+
+          {report.description && (
+            <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{report.description}</p>
+          )}
         </div>
-        <span
-          className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${statusClasses[report.status]}`}
-        >
-          {statusLabels[report.status]}
-        </span>
+        <AttachmentsGallery reportId={report.id} variant="thumbs" />
       </div>
 
-      <h3 className="mt-2 font-semibold text-sm text-foreground line-clamp-2">{report.title}</h3>
-
-      {report.description && (
-        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{report.description}</p>
-      )}
 
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {report.location_name && (
