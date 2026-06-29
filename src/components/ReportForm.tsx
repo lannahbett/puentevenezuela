@@ -51,11 +51,26 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [urgency, setUrgency] = useState("3");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const mutation = useMutation({
     mutationFn: createReport,
-    onSuccess: () => {
+    onSuccess: async (created) => {
+      if (photos.length && created?.id) {
+        setUploading(true);
+        try {
+          for (const file of photos) {
+            await uploadAttachment(created.id, file);
+          }
+        } catch (e) {
+          toast.error(e instanceof Error ? e.message : "Upload error");
+        }
+        setUploading(false);
+      }
       queryClient.invalidateQueries({ queryKey: ["reports"] });
+      queryClient.invalidateQueries({ queryKey: ["attachments", created.id] });
       toast.success(t("successReport"));
       resetForm();
       onOpenChange(false);
@@ -73,7 +88,24 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
     setContactPhone("");
     setContactEmail("");
     setUrgency("3");
+    setPhotos([]);
+    if (fileRef.current) fileRef.current.value = "";
   }
+
+  function handleFiles(files: FileList | null) {
+    if (!files) return;
+    const valid: File[] = [];
+    for (const f of Array.from(files)) {
+      if (!f.type.startsWith("image/")) continue;
+      if (f.size > 5 * 1024 * 1024) {
+        toast.error(`${f.name}: > 5MB`);
+        continue;
+      }
+      valid.push(f);
+    }
+    setPhotos((prev) => [...prev, ...valid].slice(0, 5));
+  }
+
 
   function useMyLocation() {
     if (!navigator.geolocation) {
