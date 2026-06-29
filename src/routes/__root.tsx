@@ -127,6 +127,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    import("@/lib/pwa-register").then((m) => m.registerPwa());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
@@ -141,3 +145,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
