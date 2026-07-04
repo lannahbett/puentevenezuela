@@ -38,6 +38,13 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
   const [showAssign, setShowAssign] = useState(false);
   const [assignName, setAssignName] = useState("");
   const [assignContact, setAssignContact] = useState("");
+  const [showContact, setShowContact] = useState(false);
+
+  const contactQuery = useQuery({
+    queryKey: ["report-contact", report?.id],
+    queryFn: () => revealReportContact({ data: { reportId: report!.id } }),
+    enabled: !!report && showContact,
+  });
 
   const assign = useMutation({
     mutationFn: assignReport,
