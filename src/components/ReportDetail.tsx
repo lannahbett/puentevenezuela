@@ -7,8 +7,8 @@ import { Slider } from "@/components/ui/slider";
 import type { Tables } from "@/integrations/supabase/types";
 import { useI18n } from "@/lib/i18n";
 import { distanceKm } from "@/lib/distance";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { assignReport, updateStatus } from "@/lib/reports.functions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { assignReport, revealReportContact, updateStatus } from "@/lib/reports.functions";
 import { toast } from "sonner";
 import {
   MapPin,
