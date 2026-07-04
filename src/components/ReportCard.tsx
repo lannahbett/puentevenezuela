@@ -75,12 +75,6 @@ export function ReportCard({ report, onClick, isSelected, distanceLabel }: Repor
           </span>
         )}
         {distanceLabel && <span className="text-primary font-medium">{distanceLabel}</span>}
-        {report.contact_phone && (
-          <span className="flex items-center gap-1">
-            <Phone className="h-3 w-3" />
-            {report.contact_phone}
-          </span>
-        )}
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {report.urgency}/5
