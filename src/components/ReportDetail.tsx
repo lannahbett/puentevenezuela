@@ -141,29 +141,54 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
                 <span>{report.location_name}</span>
               </div>
             )}
-            {report.contact_name && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <User className="h-4 w-4 shrink-0" />
-                <span>{report.contact_name}</span>
-              </div>
-            )}
-            {report.contact_phone && (
-              <a
-                href={`tel:${report.contact_phone}`}
-                className="flex items-center gap-2 text-primary font-medium"
+            {showContact ? (
+              <>
+                {contactQuery.data?.contact_name && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <User className="h-4 w-4 shrink-0" />
+                    <span>{contactQuery.data.contact_name}</span>
+                  </div>
+                )}
+                {contactQuery.data?.contact_phone && (
+                  <a
+                    href={`tel:${contactQuery.data.contact_phone}`}
+                    className="flex items-center gap-2 text-primary font-medium"
+                  >
+                    <Phone className="h-4 w-4 shrink-0" />
+                    {contactQuery.data.contact_phone}
+                  </a>
+                )}
+                {contactQuery.data?.contact_email && (
+                  <a
+                    href={`mailto:${contactQuery.data.contact_email}`}
+                    className="flex items-center gap-2 text-primary"
+                  >
+                    <Mail className="h-4 w-4 shrink-0" />
+                    {contactQuery.data.contact_email}
+                  </a>
+                )}
+                {contactQuery.isLoading && (
+                  <span className="text-xs text-muted-foreground">…</span>
+                )}
+                {contactQuery.data &&
+                  !contactQuery.data.contact_name &&
+                  !contactQuery.data.contact_phone &&
+                  !contactQuery.data.contact_email && (
+                    <span className="text-xs text-muted-foreground italic">
+                      {t("noContactInfo")}
+                    </span>
+                  )}
+              </>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="justify-start"
+                onClick={() => setShowContact(true)}
               >
-                <Phone className="h-4 w-4 shrink-0" />
-                {report.contact_phone}
-              </a>
-            )}
-            {report.contact_email && (
-              <a
-                href={`mailto:${report.contact_email}`}
-                className="flex items-center gap-2 text-primary"
-              >
-                <Mail className="h-4 w-4 shrink-0" />
-                {report.contact_email}
-              </a>
+                <User className="h-4 w-4" />
+                {t("revealContact")}
+              </Button>
             )}
           </div>
 
