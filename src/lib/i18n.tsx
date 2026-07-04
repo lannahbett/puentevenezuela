@@ -82,6 +82,8 @@ const dict: Dict = {
   markResolved: { es: "Marcar como resuelto", en: "Mark as resolved" },
   reopen: { es: "Reabrir", en: "Reopen" },
   close: { es: "Cerrar", en: "Close" },
+  revealContact: { es: "Mostrar contacto", en: "Show contact" },
+  noContactInfo: { es: "Sin datos de contacto", en: "No contact info provided" },
   distanceAway: { es: "a {km} km", en: "{km} km away" },
   successReport: { es: "¡Reporte enviado!", en: "Report sent!" },
   errorReport: { es: "Error al enviar reporte", en: "Error sending report" },
