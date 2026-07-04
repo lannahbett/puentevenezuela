@@ -32,7 +32,7 @@ interface ReportDetailProps {
 }
 
 export function ReportDetail({ report, allReports, onClose }: ReportDetailProps) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const qc = useQueryClient();
   const [radius, setRadius] = useState(20);
   const [showAssign, setShowAssign] = useState(false);
