@@ -321,31 +321,16 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
                     {m.location_name && (
                       <div className="text-muted-foreground">📍 {m.location_name}</div>
                     )}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {m.contact_phone && (
-                        <a
-                          href={`tel:${m.contact_phone}`}
-                          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-primary text-[11px] font-medium"
-                        >
-                          <Phone className="h-2.5 w-2.5" />
-                          {m.contact_phone}
-                        </a>
-                      )}
-                      {m.contact_phone && (
-                        <a
-                          href={`https://wa.me/${m.contact_phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-                            lang === "es"
-                              ? `Hola, te contacto por "${report.title}" en Puente Venezuela.`
-                              : `Hi, I'm reaching out about "${report.title}" on Puente Venezuela.`,
-                          )}`}
-                          target="_blank"
-                          rel="noopener"
-                          className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 text-[11px] font-medium"
-                        >
-                          WhatsApp
-                        </a>
-                      )}
-                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
                   </li>
                 ))}
               </ul>
