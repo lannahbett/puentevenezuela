@@ -1,5 +1,5 @@
 import type { Tables } from "@/integrations/supabase/types";
-import { MapPin, Phone, User, Clock, CheckCircle2 } from "lucide-react";
+import { MapPin, User, Clock, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { AttachmentsGallery } from "./AttachmentsGallery";
 
@@ -75,12 +75,6 @@ export function ReportCard({ report, onClick, isSelected, distanceLabel }: Repor
           </span>
         )}
         {distanceLabel && <span className="text-primary font-medium">{distanceLabel}</span>}
-        {report.contact_phone && (
-          <span className="flex items-center gap-1">
-            <Phone className="h-3 w-3" />
-            {report.contact_phone}
-          </span>
-        )}
         <span className="flex items-center gap-1">
           <Clock className="h-3 w-3" />
           {report.urgency}/5

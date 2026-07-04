@@ -7,8 +7,8 @@ import { Slider } from "@/components/ui/slider";
 import type { Tables } from "@/integrations/supabase/types";
 import { useI18n } from "@/lib/i18n";
 import { distanceKm } from "@/lib/distance";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { assignReport, updateStatus } from "@/lib/reports.functions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { assignReport, revealReportContact, updateStatus } from "@/lib/reports.functions";
 import { toast } from "sonner";
 import {
   MapPin,
@@ -32,12 +32,19 @@ interface ReportDetailProps {
 }
 
 export function ReportDetail({ report, allReports, onClose }: ReportDetailProps) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const qc = useQueryClient();
   const [radius, setRadius] = useState(20);
   const [showAssign, setShowAssign] = useState(false);
   const [assignName, setAssignName] = useState("");
   const [assignContact, setAssignContact] = useState("");
+  const [showContact, setShowContact] = useState(false);
+
+  const contactQuery = useQuery({
+    queryKey: ["report-contact", report?.id],
+    queryFn: () => revealReportContact({ data: { reportId: report!.id } }),
+    enabled: !!report && showContact,
+  });
 
   const assign = useMutation({
     mutationFn: assignReport,
@@ -134,29 +141,54 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
                 <span>{report.location_name}</span>
               </div>
             )}
-            {report.contact_name && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <User className="h-4 w-4 shrink-0" />
-                <span>{report.contact_name}</span>
-              </div>
-            )}
-            {report.contact_phone && (
-              <a
-                href={`tel:${report.contact_phone}`}
-                className="flex items-center gap-2 text-primary font-medium"
+            {showContact ? (
+              <>
+                {contactQuery.data?.contact_name && (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <User className="h-4 w-4 shrink-0" />
+                    <span>{contactQuery.data.contact_name}</span>
+                  </div>
+                )}
+                {contactQuery.data?.contact_phone && (
+                  <a
+                    href={`tel:${contactQuery.data.contact_phone}`}
+                    className="flex items-center gap-2 text-primary font-medium"
+                  >
+                    <Phone className="h-4 w-4 shrink-0" />
+                    {contactQuery.data.contact_phone}
+                  </a>
+                )}
+                {contactQuery.data?.contact_email && (
+                  <a
+                    href={`mailto:${contactQuery.data.contact_email}`}
+                    className="flex items-center gap-2 text-primary"
+                  >
+                    <Mail className="h-4 w-4 shrink-0" />
+                    {contactQuery.data.contact_email}
+                  </a>
+                )}
+                {contactQuery.isLoading && (
+                  <span className="text-xs text-muted-foreground">…</span>
+                )}
+                {contactQuery.data &&
+                  !contactQuery.data.contact_name &&
+                  !contactQuery.data.contact_phone &&
+                  !contactQuery.data.contact_email && (
+                    <span className="text-xs text-muted-foreground italic">
+                      {t("noContactInfo")}
+                    </span>
+                  )}
+              </>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                className="justify-start"
+                onClick={() => setShowContact(true)}
               >
-                <Phone className="h-4 w-4 shrink-0" />
-                {report.contact_phone}
-              </a>
-            )}
-            {report.contact_email && (
-              <a
-                href={`mailto:${report.contact_email}`}
-                className="flex items-center gap-2 text-primary"
-              >
-                <Mail className="h-4 w-4 shrink-0" />
-                {report.contact_email}
-              </a>
+                <User className="h-4 w-4" />
+                {t("revealContact")}
+              </Button>
             )}
           </div>
 
@@ -289,31 +321,6 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
                     {m.location_name && (
                       <div className="text-muted-foreground">📍 {m.location_name}</div>
                     )}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {m.contact_phone && (
-                        <a
-                          href={`tel:${m.contact_phone}`}
-                          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-primary text-[11px] font-medium"
-                        >
-                          <Phone className="h-2.5 w-2.5" />
-                          {m.contact_phone}
-                        </a>
-                      )}
-                      {m.contact_phone && (
-                        <a
-                          href={`https://wa.me/${m.contact_phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-                            lang === "es"
-                              ? `Hola, te contacto por "${report.title}" en Puente Venezuela.`
-                              : `Hi, I'm reaching out about "${report.title}" on Puente Venezuela.`,
-                          )}`}
-                          target="_blank"
-                          rel="noopener"
-                          className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-700 text-[11px] font-medium"
-                        >
-                          WhatsApp
-                        </a>
-                      )}
-                    </div>
                   </li>
                 ))}
               </ul>
@@ -324,3 +331,4 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
     </Sheet>
   );
 }
+

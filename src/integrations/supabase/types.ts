@@ -52,15 +52,44 @@ export type Database = {
           },
         ]
       }
+      report_contacts: {
+        Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          report_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          report_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_contacts_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: true
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reports: {
         Row: {
           assigned_at: string | null
           assigned_to_contact: string | null
           assigned_to_name: string | null
           category: Database["public"]["Enums"]["report_category"]
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
           created_at: string
           description: string | null
           id: string
@@ -79,9 +108,6 @@ export type Database = {
           assigned_to_contact?: string | null
           assigned_to_name?: string | null
           category: Database["public"]["Enums"]["report_category"]
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -100,9 +126,6 @@ export type Database = {
           assigned_to_contact?: string | null
           assigned_to_name?: string | null
           category?: Database["public"]["Enums"]["report_category"]
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
           created_at?: string
           description?: string | null
           id?: string
