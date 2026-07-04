@@ -39,15 +39,20 @@ const assignSchema = z.object({
   assigned_to_contact: z.string().min(1).max(200),
 });
 
+const revealSchema = z.object({ reportId: z.string().uuid() });
 
-export const listReports = createServerFn({ method: "GET" }).handler(async () => {
+async function getPublicClient() {
   const { createClient } = await import("@supabase/supabase-js");
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) throw new Error("Missing Supabase config");
-  const supabase = createClient(url, key, {
+  return createClient(url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
+}
+
+export const listReports = createServerFn({ method: "GET" }).handler(async () => {
+  const supabase = await getPublicClient();
   const { data, error } = await supabase
     .from("reports")
     .select("*")
@@ -59,34 +64,39 @@ export const listReports = createServerFn({ method: "GET" }).handler(async () =>
 export const createReport = createServerFn({ method: "POST" })
   .inputValidator((data) => reportSchema.parse(data))
   .handler(async ({ data }) => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-    if (!url || !key) throw new Error("Missing Supabase config");
-    const supabase = createClient(url, key, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
+    const supabase = await getPublicClient();
+    const {
+      contact_name,
+      contact_phone,
+      contact_email,
+      ...reportData
+    } = data;
     const { data: result, error } = await supabase
       .from("reports")
-      .insert(data)
+      .insert(reportData)
       .select()
       .single();
     if (error) throw new Error(error.message);
+
+    if (contact_name || contact_phone || contact_email) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error: cErr } = await supabaseAdmin.from("report_contacts").insert({
+        report_id: result.id,
+        contact_name: contact_name ?? null,
+        contact_phone: contact_phone ?? null,
+        contact_email: contact_email ?? null,
+      });
+      if (cErr) throw new Error(cErr.message);
+    }
     return result;
   });
 
 export const updateStatus = createServerFn({ method: "POST" })
   .inputValidator((data) => statusSchema.parse(data))
   .handler(async ({ data }) => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-    if (!url || !key) throw new Error("Missing Supabase config");
-    const supabase = createClient(url, key, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, status } = data;
-    const { data: result, error } = await supabase
+    const { data: result, error } = await supabaseAdmin
       .from("reports")
       .update({ status })
       .eq("id", id)
@@ -99,15 +109,9 @@ export const updateStatus = createServerFn({ method: "POST" })
 export const assignReport = createServerFn({ method: "POST" })
   .inputValidator((data) => assignSchema.parse(data))
   .handler(async ({ data }) => {
-    const { createClient } = await import("@supabase/supabase-js");
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_PUBLISHABLE_KEY;
-    if (!url || !key) throw new Error("Missing Supabase config");
-    const supabase = createClient(url, key, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, assigned_to_name, assigned_to_contact } = data;
-    const { data: result, error } = await supabase
+    const { data: result, error } = await supabaseAdmin
       .from("reports")
       .update({
         assigned_to_name,
@@ -122,3 +126,15 @@ export const assignReport = createServerFn({ method: "POST" })
     return result;
   });
 
+export const revealReportContact = createServerFn({ method: "POST" })
+  .inputValidator((data) => revealSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("report_contacts")
+      .select("contact_name, contact_phone, contact_email")
+      .eq("report_id", data.reportId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return row ?? { contact_name: null, contact_phone: null, contact_email: null };
+  });
