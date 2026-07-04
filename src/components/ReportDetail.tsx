@@ -331,13 +331,4 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
     </Sheet>
   );
 }
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-}
+
