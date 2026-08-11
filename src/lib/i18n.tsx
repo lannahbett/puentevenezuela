@@ -5,10 +5,11 @@ export type Lang = "es" | "en";
 type Dict = Record<string, { es: string; en: string }>;
 
 const dict: Dict = {
-  appName: { es: "Puente Venezuela", en: "Puente Venezuela" },
+  appName: { es: "Puente Venezuela y Colombia", en: "Puente Venezuela & Colombia" },
+  appNameShort: { es: "Puente", en: "Puente" },
   tagline: {
-    es: "Conectando necesidades y ayuda en tiempo real",
-    en: "Connecting needs and help in real time",
+    es: "Conectando necesidades y ayuda en tiempo real en Venezuela y Colombia",
+    en: "Connecting needs and help in real time across Venezuela and Colombia",
   },
   nav_map: { es: "Mapa", en: "Map" },
   nav_about: { es: "Acerca de", en: "About" },
@@ -94,13 +95,13 @@ const dict: Dict = {
   radiusKm: { es: "Radio: {km} km", en: "Radius: {km} km" },
   emergencyTitle: { es: "Contactos de emergencia", en: "Emergency contacts" },
   emergencySubtitle: {
-    es: "Números oficiales en Venezuela",
-    en: "Official numbers in Venezuela",
+    es: "Números oficiales en Venezuela y Colombia",
+    en: "Official numbers in Venezuela and Colombia",
   },
   about_what: { es: "¿Qué es esta plataforma?", en: "What is this platform?" },
   about_whatBody: {
-    es: "Puente Venezuela es una plataforma de coordinación humanitaria que conecta a personas afectadas por los terremotos con quienes pueden ayudar. Visibiliza en tiempo real necesidades y ofertas en el mapa, reduce el desperdicio de recursos y acelera el socorro.",
-    en: "Puente Venezuela is a humanitarian coordination platform that connects people affected by the earthquakes with those who can help. It surfaces needs and offers on a live map, reduces wasted resources, and speeds up relief.",
+    es: "Puente Venezuela y Colombia es una plataforma de coordinación humanitaria que conecta a personas afectadas por los terremotos con quienes pueden ayudar. Visibiliza en tiempo real necesidades y ofertas en el mapa, reduce el desperdicio de recursos y acelera el socorro.",
+    en: "Puente Venezuela & Colombia is a humanitarian coordination platform that connects people affected by the earthquakes with those who can help. It surfaces needs and offers on a live map, reduces wasted resources, and speeds up relief.",
   },
   about_how: { es: "Cómo funciona", en: "How it works" },
   about_step1: { es: "Mapea", en: "Map it" },
@@ -132,8 +133,8 @@ const dict: Dict = {
     en: "Every minute counts. Every helping hand arrives.",
   },
   landing_heroSubtitle: {
-    es: "Puente conecta en tiempo real a quienes necesitan ayuda con quienes pueden brindarla, tras los terremotos en Venezuela.",
-    en: "Puente connects people who need help with those who can offer it in real time, after the earthquakes in Venezuela.",
+    es: "Puente conecta en tiempo real a quienes necesitan ayuda con quienes pueden brindarla, tras los terremotos en Venezuela y Colombia.",
+    en: "Puente connects people who need help with those who can offer it in real time, after the earthquakes in Venezuela and Colombia.",
   },
   landing_ctaMap: { es: "Ver el mapa", en: "Open the map" },
   landing_ctaReport: { es: "Reportar ayuda", en: "Report help" },
@@ -216,6 +217,60 @@ const dict: Dict = {
   uploadingPhotos: { es: "Subiendo fotos...", en: "Uploading photos..." },
   // Offline
   offline: { es: "Sin conexión", en: "Offline" },
+  // Countries
+  country: { es: "País", en: "Country" },
+  country_all: { es: "Ambos países", en: "Both countries" },
+  country_VE: { es: "Venezuela", en: "Venezuela" },
+  country_CO: { es: "Colombia", en: "Colombia" },
+  filter_country: { es: "País", en: "Country" },
+  // Nearby feed
+  nearby: { es: "Cerca de mí", en: "Near me" },
+  nearbyOn: { es: "Ordenado por distancia", en: "Sorted by distance" },
+  nearbyEnable: { es: "Usar mi ubicación", en: "Use my location" },
+  nearbyRadius: { es: "Radio: {km} km", en: "Radius: {km} km" },
+  // Items
+  itemsTitle: { es: "Qué se necesita", en: "What is needed" },
+  itemsEmpty: { es: "Sin lista de artículos todavía.", en: "No item list yet." },
+  itemAdd: { es: "Agregar artículo", en: "Add item" },
+  itemLabel: { es: "Artículo", en: "Item" },
+  itemQty: { es: "Cantidad", en: "Quantity" },
+  itemPledge: { es: "Aporto", en: "I'll cover" },
+  itemCovered: { es: "{done} de {need} cubierto", en: "{done} of {need} covered" },
+  itemComplete: { es: "Completo", en: "Complete" },
+  itemAddedOk: { es: "Artículo agregado", en: "Item added" },
+  itemPledgedOk: { es: "¡Gracias! Aporte registrado", en: "Thank you! Contribution recorded" },
+  // Updates timeline
+  updatesTitle: { es: "Actualizaciones", en: "Updates" },
+  updatesEmpty: { es: "Aún no hay actualizaciones.", en: "No updates yet." },
+  updatePlaceholder: {
+    es: "Ej: agua entregada a 12 familias",
+    en: "e.g. water delivered to 12 families",
+  },
+  updateSend: { es: "Publicar", en: "Post" },
+  updateOk: { es: "Actualización publicada", en: "Update posted" },
+  anonymous: { es: "Anónimo", en: "Anonymous" },
+  // Duplicates
+  dupTitle: { es: "Reportes muy parecidos cerca", en: "Very similar reports nearby" },
+  dupBody: {
+    es: "Ya existe un reporte de esta categoría a menos de 1 km. Revisa antes de duplicar.",
+    en: "A report in this category already exists within 1 km. Check before duplicating.",
+  },
+  dupContinue: { es: "Publicar igualmente", en: "Post anyway" },
+  dupCancel: { es: "Revisar el existente", en: "Review the existing one" },
+  // Ageing
+  stale: { es: "Sin respuesta 48h+", en: "No response 48h+" },
+  filter_onlyStale: { es: "Sólo sin respuesta", en: "Only unanswered" },
+  // Export
+  exportCsv: { es: "Exportar CSV", en: "Export CSV" },
+  // Hubs
+  hubsToggle: { es: "Puntos de apoyo", en: "Resource hubs" },
+  hub_shelter: { es: "Refugio", en: "Shelter" },
+  hub_water: { es: "Punto de agua", en: "Water point" },
+  hub_medical: { es: "Puesto médico", en: "Medical post" },
+  // Report page
+  reportNotFound: { es: "Reporte no encontrado", en: "Report not found" },
+  openInMap: { es: "Ver en el mapa", en: "View on map" },
+  postedAt: { es: "Publicado", en: "Posted" },
 };
 
 

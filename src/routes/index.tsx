@@ -25,19 +25,19 @@ import heroAsset from "@/assets/hero-landing.jpg.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Puente Venezuela — Coordinación humanitaria en tiempo real" },
+      { title: "Puente Venezuela y Colombia — Coordinación humanitaria en tiempo real" },
       {
         name: "description",
         content:
-          "Plataforma abierta que conecta necesidades y ofertas de ayuda tras los terremotos en Venezuela. Mapa en vivo, sin registro, gratis.",
+          "Plataforma abierta que conecta necesidades y ofertas de ayuda tras los terremotos en Venezuela y Colombia. Mapa en vivo, sin registro, gratis.",
       },
       {
         property: "og:title",
-        content: "Puente Venezuela — Coordinación humanitaria en tiempo real",
+        content: "Puente Venezuela y Colombia — Coordinación humanitaria en tiempo real",
       },
       {
         property: "og:description",
-        content: "Mapa en vivo de necesidades y ofertas de ayuda en Venezuela.",
+        content: "Mapa en vivo de necesidades y ofertas de ayuda en Venezuela y Colombia.",
       },
       { property: "og:image", content: heroAsset.url },
     ],

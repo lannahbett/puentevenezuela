@@ -6,11 +6,11 @@ import logoUrl from "@/assets/logo.png";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Acerca de — Puente Venezuela" },
+      { title: "Acerca de — Puente Venezuela y Colombia" },
       {
         name: "description",
         content:
-          "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela.",
+          "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela y Colombia.",
       },
     ],
   }),

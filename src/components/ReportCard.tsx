@@ -1,6 +1,8 @@
 import type { Tables } from "@/integrations/supabase/types";
 import { MapPin, User, Clock, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { COUNTRIES } from "@/lib/countries";
+import { isStale } from "@/lib/stale";
 import { AttachmentsGallery } from "./AttachmentsGallery";
 
 
@@ -49,6 +51,14 @@ export function ReportCard({ report, onClick, isSelected, distanceLabel }: Repor
               <span className="text-xs text-muted-foreground">
                 {t(`cat_${report.category}` as never)}
               </span>
+              <span className="text-xs text-muted-foreground">
+                {COUNTRIES[(report.country ?? "VE") as "VE" | "CO"].flag}
+              </span>
+              {isStale(report) && (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-800">
+                  {t("stale")}
+                </span>
+              )}
             </div>
             <span
               className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${statusClasses[report.status]}`}

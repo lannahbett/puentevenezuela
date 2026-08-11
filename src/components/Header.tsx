@@ -5,6 +5,7 @@ import logoUrl from "@/assets/logo.png";
 import { useI18n } from "@/lib/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { OfflineIndicator } from "./OfflineIndicator";
+import { CountrySelect } from "./CountrySelect";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,7 +16,10 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4">
         <Link to="/" className="flex min-w-0 items-center gap-2 font-bold text-foreground">
           <img src={logoUrl} alt="" width={28} height={28} className="h-7 w-7 shrink-0" />
-          <span className="truncate text-base sm:text-lg">{t("appName")}</span>
+          <span className="truncate text-base sm:text-lg">
+            <span className="hidden sm:inline">{t("appName")}</span>
+            <span className="sm:hidden">{t("appNameShort")}</span>
+          </span>
         </Link>
 
         <OfflineIndicator />
@@ -39,10 +43,12 @@ export function Header() {
           >
             {t("nav_about")}
           </Link>
+          <CountrySelect />
           <LanguageToggle />
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 md:hidden">
+        <div className="ml-auto flex items-center gap-1.5 md:hidden">
+          <CountrySelect />
           <LanguageToggle />
           <button
             className="p-2"

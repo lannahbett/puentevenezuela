@@ -1,7 +1,7 @@
 {
-  "name": "Puente Venezuela",
+  "name": "Puente Venezuela y Colombia",
   "short_name": "Puente",
-  "description": "Coordinación humanitaria en tiempo real tras los terremotos en Venezuela.",
+  "description": "Coordinación humanitaria en tiempo real tras los terremotos en Venezuela y Colombia.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -9,8 +9,23 @@
   "theme_color": "#0d9488",
   "lang": "es",
   "icons": [
-    { "src": "/pwa-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/pwa-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

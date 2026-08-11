@@ -25,21 +25,34 @@ import {
   SlidersHorizontal,
   X,
   Image as ImageIcon,
+  Navigation,
+  Download,
+  Building2,
 } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
+import { useCountry } from "@/lib/country";
+import { COUNTRIES } from "@/lib/countries";
+import { distanceKm } from "@/lib/distance";
+import { isStale } from "@/lib/stale";
+import { toast } from "sonner";
 
 type Report = Tables<"reports">;
 
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
-      { title: "Mapa de ayuda — Puente Venezuela" },
+      { title: "Mapa de ayuda — Puente Venezuela y Colombia" },
       {
         name: "description",
         content:
-          "Mapa interactivo de necesidades y ofertas de ayuda tras los terremotos en Venezuela.",
+          "Mapa interactivo de necesidades y ofertas de ayuda tras los terremotos en Venezuela y Colombia.",
+      },
+      { property: "og:title", content: "Mapa de ayuda — Puente Venezuela y Colombia" },
+      {
+        property: "og:description",
+        content: "Necesidades y ofertas de ayuda en vivo en Venezuela y Colombia.",
       },
     ],
   }),
@@ -51,6 +64,7 @@ type Period = "all" | "24h" | "7d" | "30d";
 
 function MapPage() {
   const { t } = useI18n();
+  const { scope } = useCountry();
   const qc = useQueryClient();
   const { data: reports = [] } = useQuery({
     queryKey: ["reports"],
@@ -98,6 +112,20 @@ function MapPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [mobileView, setMobileView] = useState<"map" | "list">("map");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [onlyStale, setOnlyStale] = useState(false);
+  const [showHubs, setShowHubs] = useState(false);
+  const [userPos, setUserPos] = useState<{ lat: number; lng: number } | null>(null);
+
+  function locateMe() {
+    if (!navigator.geolocation) {
+      toast.error(t("geoFailed"));
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserPos({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => toast.error(t("geoFailed")),
+    );
+  }
 
   const clearAll = () => {
     setSearch("");
@@ -107,6 +135,7 @@ function MapPage() {
     setPeriod("all");
     setMinUrgency(1);
     setOnlyWithPhotos(false);
+    setOnlyStale(false);
   };
 
   const activeCount =
@@ -116,7 +145,8 @@ function MapPage() {
     (statusFilter !== "all" ? 1 : 0) +
     (period !== "all" ? 1 : 0) +
     (minUrgency > 1 ? 1 : 0) +
-    (onlyWithPhotos ? 1 : 0);
+    (onlyWithPhotos ? 1 : 0) +
+    (onlyStale ? 1 : 0);
 
   const filteredReports = useMemo(() => {
     const now = Date.now();
@@ -128,6 +158,8 @@ function MapPage() {
     };
     const q = search.trim().toLowerCase();
     return reports.filter((r) => {
+      if (scope !== "all" && (r.country ?? "VE") !== scope) return false;
+      if (onlyStale && !isStale(r)) return false;
       if (typeFilter !== "all" && r.type !== typeFilter) return false;
       if (categoryFilter !== "all" && r.category !== categoryFilter) return false;
       if (statusFilter !== "all" && r.status !== statusFilter) return false;
@@ -153,7 +185,50 @@ function MapPage() {
     onlyWithPhotos,
     search,
     reportsWithPhotos,
+    scope,
+    onlyStale,
   ]);
+
+  const listReportsSorted = useMemo(() => {
+    if (!userPos) return filteredReports;
+    return [...filteredReports].sort(
+      (a, b) =>
+        distanceKm(userPos.lat, userPos.lng, a.latitude, a.longitude) -
+        distanceKm(userPos.lat, userPos.lng, b.latitude, b.longitude),
+    );
+  }, [filteredReports, userPos]);
+
+  function exportCsv() {
+    const header = [
+      "id",
+      "country",
+      "type",
+      "category",
+      "title",
+      "description",
+      "location_name",
+      "latitude",
+      "longitude",
+      "urgency",
+      "status",
+      "assigned_to_name",
+      "created_at",
+    ];
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [
+      header.join(","),
+      ...filteredReports.map((r) =>
+        header.map((h) => esc((r as unknown as Record<string, unknown>)[h])).join(","),
+      ),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `puente-reportes-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   const categories = useMemo(() => {
     const set = new Set<string>();
@@ -188,6 +263,20 @@ function MapPage() {
               · {t("filter_results", { n: filteredReports.length })}
             </span>
           </div>
+          <span className="hidden lg:inline text-muted-foreground">
+            {scope === "all"
+              ? t("country_all")
+              : `${COUNTRIES[scope].flag} ${t(`country_${scope}` as never)}`}
+          </span>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={exportCsv}
+            className="h-8 hidden sm:inline-flex"
+          >
+            <Download className="h-3.5 w-3.5" />
+            {t("exportCsv")}
+          </Button>
           <Button size="sm" onClick={() => setFormOpen(true)} className="h-8">
             <Plus className="h-3.5 w-3.5" />
             {t("report")}
@@ -236,6 +325,26 @@ function MapPage() {
               </button>
             ))}
           </div>
+
+          <Button
+            variant={userPos ? "default" : "outline"}
+            size="sm"
+            className="h-8 shrink-0"
+            onClick={() => (userPos ? setUserPos(null) : locateMe())}
+          >
+            <Navigation className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{t("nearby")}</span>
+          </Button>
+
+          <Button
+            variant={showHubs ? "default" : "outline"}
+            size="sm"
+            className="h-8 shrink-0"
+            onClick={() => setShowHubs((v) => !v)}
+          >
+            <Building2 className="h-3.5 w-3.5" />
+            <span className="hidden lg:inline">{t("hubsToggle")}</span>
+          </Button>
 
           <Sheet open={filtersOpen} onOpenChange={setFiltersOpen}>
             <SheetTrigger asChild>
@@ -343,6 +452,21 @@ function MapPage() {
                   {t("filter_withPhotos")}
                 </label>
 
+                <label className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={onlyStale}
+                    onChange={(e) => setOnlyStale(e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                  {t("filter_onlyStale")}
+                </label>
+
+                <Button variant="outline" onClick={exportCsv} className="w-full sm:hidden">
+                  <Download className="h-4 w-4" />
+                  {t("exportCsv")}
+                </Button>
+
                 <div className="flex gap-2 pt-2">
                   <Button variant="outline" onClick={clearAll} className="flex-1">
                     {t("filter_clear")}
@@ -400,6 +524,8 @@ function MapPage() {
             reports={filteredReports}
             onSelectReport={(r) => setSelectedReport(r)}
             highlight={selectedReport}
+            scope={scope}
+            showHubs={showHubs}
           />
         </div>
 
@@ -408,16 +534,33 @@ function MapPage() {
             mobileView === "map" ? "hidden md:block md:w-96" : "md:w-96"
           }`}
         >
-          {filteredReports.length === 0 ? (
+          {userPos && (
+            <div className="rounded-md bg-primary/10 px-2 py-1 text-[11px] font-medium text-primary">
+              {t("nearbyOn")}
+            </div>
+          )}
+          {listReportsSorted.length === 0 ? (
             <div className="rounded-lg border border-dashed border-border p-8 text-center">
               <p className="text-sm text-muted-foreground">{t("noReports")}</p>
             </div>
           ) : (
-            filteredReports.map((report) => (
+            listReportsSorted.map((report) => (
               <ReportCard
                 key={report.id}
                 report={report}
                 isSelected={selectedReport?.id === report.id}
+                distanceLabel={
+                  userPos
+                    ? t("distanceAway", {
+                        km: distanceKm(
+                          userPos.lat,
+                          userPos.lng,
+                          report.latitude,
+                          report.longitude,
+                        ).toFixed(1),
+                      })
+                    : undefined
+                }
                 onClick={() => setSelectedReport(report)}
               />
             ))

@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Header } from "@/components/Header";
 import { I18nProvider } from "@/lib/i18n";
+import { CountryProvider } from "@/lib/country";
 import "leaflet/dist/leaflet.css";
 
 function NotFoundComponent() {
@@ -75,20 +76,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Puente Venezuela — Coordinación humanitaria" },
+      { title: "Puente Venezuela y Colombia — Coordinación humanitaria" },
       {
         name: "description",
         content:
-          "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela.",
+          "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela y Colombia.",
       },
-      { property: "og:title", content: "Puente Venezuela — Coordinación humanitaria" },
+      { property: "og:title", content: "Puente Venezuela y Colombia — Coordinación humanitaria" },
       {
         property: "og:description",
         content: "Conecta necesidades y ofertas de ayuda en tiempo real.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Puente Venezuela — Coordinación humanitaria" },
+      { name: "twitter:title", content: "Puente Venezuela y Colombia — Coordinación humanitaria" },
       { name: "description", content: "Shelter Response aids earthquake victims by facilitating resource allocation and communication." },
       { property: "og:description", content: "Shelter Response aids earthquake victims by facilitating resource allocation and communication." },
       { name: "twitter:description", content: "Shelter Response aids earthquake victims by facilitating resource allocation and communication." },
@@ -134,6 +135,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
+        <CountryProvider>
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">
@@ -141,6 +143,7 @@ function RootComponent() {
           </main>
         </div>
         <Toaster position="top-right" richColors />
+        </CountryProvider>
       </I18nProvider>
     </QueryClientProvider>
   );
