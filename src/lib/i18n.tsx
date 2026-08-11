@@ -100,8 +100,8 @@ const dict: Dict = {
   },
   about_what: { es: "¿Qué es esta plataforma?", en: "What is this platform?" },
   about_whatBody: {
-    es: "Puente Venezuela es una plataforma de coordinación humanitaria que conecta a personas afectadas por los terremotos con quienes pueden ayudar. Visibiliza en tiempo real necesidades y ofertas en el mapa, reduce el desperdicio de recursos y acelera el socorro.",
-    en: "Puente Venezuela is a humanitarian coordination platform that connects people affected by the earthquakes with those who can help. It surfaces needs and offers on a live map, reduces wasted resources, and speeds up relief.",
+    es: "Puente Venezuela y Colombia es una plataforma de coordinación humanitaria que conecta a personas afectadas por los terremotos con quienes pueden ayudar. Visibiliza en tiempo real necesidades y ofertas en el mapa, reduce el desperdicio de recursos y acelera el socorro.",
+    en: "Puente Venezuela & Colombia is a humanitarian coordination platform that connects people affected by the earthquakes with those who can help. It surfaces needs and offers on a live map, reduces wasted resources, and speeds up relief.",
   },
   about_how: { es: "Cómo funciona", en: "How it works" },
   about_step1: { es: "Mapea", en: "Map it" },
@@ -133,8 +133,8 @@ const dict: Dict = {
     en: "Every minute counts. Every helping hand arrives.",
   },
   landing_heroSubtitle: {
-    es: "Puente conecta en tiempo real a quienes necesitan ayuda con quienes pueden brindarla, tras los terremotos en Venezuela.",
-    en: "Puente connects people who need help with those who can offer it in real time, after the earthquakes in Venezuela.",
+    es: "Puente conecta en tiempo real a quienes necesitan ayuda con quienes pueden brindarla, tras los terremotos en Venezuela y Colombia.",
+    en: "Puente connects people who need help with those who can offer it in real time, after the earthquakes in Venezuela and Colombia.",
   },
   landing_ctaMap: { es: "Ver el mapa", en: "Open the map" },
   landing_ctaReport: { es: "Reportar ayuda", en: "Report help" },
