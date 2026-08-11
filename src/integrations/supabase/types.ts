@@ -84,12 +84,83 @@ export type Database = {
           },
         ]
       }
+      report_items: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          quantity_fulfilled: number
+          quantity_needed: number
+          report_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          quantity_fulfilled?: number
+          quantity_needed?: number
+          report_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          quantity_fulfilled?: number
+          quantity_needed?: number
+          report_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_updates: {
+        Row: {
+          author_name: string | null
+          created_at: string
+          id: string
+          message: string
+          report_id: string
+        }
+        Insert: {
+          author_name?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          report_id: string
+        }
+        Update: {
+          author_name?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          report_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_updates_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reports: {
         Row: {
           assigned_at: string | null
           assigned_to_contact: string | null
           assigned_to_name: string | null
           category: Database["public"]["Enums"]["report_category"]
+          country: Database["public"]["Enums"]["report_country"]
           created_at: string
           description: string | null
           id: string
@@ -108,6 +179,7 @@ export type Database = {
           assigned_to_contact?: string | null
           assigned_to_name?: string | null
           category: Database["public"]["Enums"]["report_category"]
+          country?: Database["public"]["Enums"]["report_country"]
           created_at?: string
           description?: string | null
           id?: string
@@ -126,6 +198,7 @@ export type Database = {
           assigned_to_contact?: string | null
           assigned_to_name?: string | null
           category?: Database["public"]["Enums"]["report_category"]
+          country?: Database["public"]["Enums"]["report_country"]
           created_at?: string
           description?: string | null
           id?: string
@@ -158,6 +231,7 @@ export type Database = {
         | "volunteer"
         | "transport"
         | "other"
+      report_country: "VE" | "CO"
       report_status: "pending" | "in_progress" | "resolved"
       report_type: "need" | "offer"
     }
@@ -297,6 +371,7 @@ export const Constants = {
         "transport",
         "other",
       ],
+      report_country: ["VE", "CO"],
       report_status: ["pending", "in_progress", "resolved"],
       report_type: ["need", "offer"],
     },

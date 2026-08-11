@@ -21,6 +21,9 @@ import {
   HandHeart,
 } from "lucide-react";
 import { AttachmentsGallery } from "./AttachmentsGallery";
+import { ReportItems } from "./ReportItems";
+import { ReportUpdates } from "./ReportUpdates";
+import { COUNTRIES } from "@/lib/countries";
 
 
 type Report = Tables<"reports">;
@@ -91,7 +94,7 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
     const label = r.type === "need" ? t("need") : t("offer");
     const where = r.location_name ?? `${r.latitude.toFixed(3)}, ${r.longitude.toFixed(3)}`;
     const url =
-      typeof window !== "undefined" ? `${window.location.origin}/?r=${r.id}` : "";
+      typeof window !== "undefined" ? `${window.location.origin}/report/${r.id}` : "";
     const text = `[${label}] ${r.title}\n📍 ${where}\n${url}`;
     const wa = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(wa, "_blank", "noopener");
@@ -120,6 +123,10 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
               </span>
               <span className="text-xs text-muted-foreground">
                 {t(`cat_${report.category}` as never)} · {report.urgency}/5
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {COUNTRIES[(report.country ?? "VE") as "VE" | "CO"].flag}{" "}
+                {t(`country_${report.country ?? "VE"}` as never)}
               </span>
             </div>
             <SheetTitle className="text-left text-lg leading-tight">{report.title}</SheetTitle>
@@ -281,6 +288,10 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
               )
             )}
           </div>
+
+          <ReportItems reportId={report.id} />
+
+          <ReportUpdates reportId={report.id} />
 
           {/* Matches */}
           <div>

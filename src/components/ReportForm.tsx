@@ -11,12 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createReport } from "@/lib/reports.functions";
+import { createReport, findSimilarReports } from "@/lib/reports.functions";
+import { COUNTRIES, guessCountry, type CountryCode } from "@/lib/countries";
+import { useCountry } from "@/lib/country";
 import { uploadAttachment } from "@/lib/upload";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { MapPin, ImagePlus, X } from "lucide-react";
+import { MapPin, ImagePlus, X, AlertTriangle, Plus } from "lucide-react";
 
 
 const CATEGORIES = [
@@ -40,13 +42,25 @@ interface ReportFormProps {
 export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: ReportFormProps) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
+  const { scope } = useCountry();
+  const initialCountry: CountryCode = scope === "all" ? "VE" : scope;
+  const [country, setCountry] = useState<CountryCode>(initialCountry);
+  const [items, setItems] = useState<{ label: string; qty: string }[]>([]);
+  const [duplicates, setDuplicates] = useState<
+    { id: string; title: string; location_name: string | null }[]
+  >([]);
+  const [checkingDup, setCheckingDup] = useState(false);
   const [type, setType] = useState<"need" | "offer">("need");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("water");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [locationName, setLocationName] = useState("");
-  const [latitude, setLatitude] = useState(defaultLat?.toString() ?? "10.48");
-  const [longitude, setLongitude] = useState(defaultLng?.toString() ?? "-66.9");
+  const [latitude, setLatitude] = useState(
+    defaultLat?.toString() ?? COUNTRIES[initialCountry].center[0].toString(),
+  );
+  const [longitude, setLongitude] = useState(
+    defaultLng?.toString() ?? COUNTRIES[initialCountry].center[1].toString(),
+  );
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -89,6 +103,8 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
     setContactEmail("");
     setUrgency("3");
     setPhotos([]);
+    setItems([]);
+    setDuplicates([]);
     if (fileRef.current) fileRef.current.value = "";
   }
 
@@ -116,19 +132,13 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
       (pos) => {
         setLatitude(pos.coords.latitude.toFixed(5));
         setLongitude(pos.coords.longitude.toFixed(5));
+        setCountry(guessCountry(pos.coords.latitude, pos.coords.longitude));
       },
       () => toast.error(t("geoFailed")),
     );
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const lat = parseFloat(latitude);
-    const lng = parseFloat(longitude);
-    if (Number.isNaN(lat) || Number.isNaN(lng)) {
-      toast.error(t("invalidCoords"));
-      return;
-    }
+  function submitNow(lat: number, lng: number) {
     mutation.mutate({
       data: {
         type,
@@ -142,8 +152,44 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
         contact_phone: contactPhone || undefined,
         contact_email: contactEmail || undefined,
         urgency: parseInt(urgency, 10),
+        country,
+        items: items
+          .filter((i) => i.label.trim())
+          .map((i) => ({
+            label: i.label.trim(),
+            quantity_needed: Math.max(1, parseInt(i.qty || "1", 10)),
+          })),
       },
     });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const lat = parseFloat(latitude);
+    const lng = parseFloat(longitude);
+    if (Number.isNaN(lat) || Number.isNaN(lng)) {
+      toast.error(t("invalidCoords"));
+      return;
+    }
+    if (duplicates.length > 0) {
+      submitNow(lat, lng);
+      return;
+    }
+    setCheckingDup(true);
+    try {
+      const similar = await findSimilarReports({
+        data: { category, type, latitude: lat, longitude: lng },
+      });
+      if (similar.length > 0) {
+        setDuplicates(similar);
+        setCheckingDup(false);
+        return;
+      }
+    } catch {
+      // duplicate check is best-effort
+    }
+    setCheckingDup(false);
+    submitNow(lat, lng);
   }
 
   return (
@@ -169,6 +215,30 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
             >
               {t("offerHelp")}
             </Button>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="country">{t("country")}</Label>
+            <Select
+              value={country}
+              onValueChange={(v) => {
+                const c = v as CountryCode;
+                setCountry(c);
+                setLatitude(COUNTRIES[c].center[0].toString());
+                setLongitude(COUNTRIES[c].center[1].toString());
+              }}
+            >
+              <SelectTrigger id="country">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(["VE", "CO"] as const).map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {COUNTRIES[c].flag} {t(`country_${c}` as never)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
@@ -214,7 +284,7 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
               id="locationName"
               value={locationName}
               onChange={(e) => setLocationName(e.target.value)}
-              placeholder="Caracas, El Hatillo"
+              placeholder={COUNTRIES[country].defaultLocationPlaceholder}
             />
           </div>
 
@@ -265,6 +335,87 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
             </div>
           </div>
 
+          {/* Items */}
+          <div className="space-y-2">
+            <Label>{t("itemsTitle")}</Label>
+            {items.map((it, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Input
+                  value={it.label}
+                  placeholder={t("itemLabel")}
+                  onChange={(e) =>
+                    setItems((prev) =>
+                      prev.map((p, idx) => (idx === i ? { ...p, label: e.target.value } : p)),
+                    )
+                  }
+                />
+                <Input
+                  value={it.qty}
+                  inputMode="numeric"
+                  aria-label={t("itemQty")}
+                  className="w-16"
+                  onChange={(e) =>
+                    setItems((prev) =>
+                      prev.map((p, idx) =>
+                        idx === i ? { ...p, qty: e.target.value.replace(/[^0-9]/g, "") } : p,
+                      ),
+                    )
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => setItems((prev) => prev.filter((_, idx) => idx !== i))}
+                  className="text-muted-foreground hover:text-destructive"
+                  aria-label={t("cancel")}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            {items.length < 10 && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setItems((prev) => [...prev, { label: "", qty: "1" }])}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                {t("itemAdd")}
+              </Button>
+            )}
+          </div>
+
+          {duplicates.length > 0 && (
+            <div className="rounded-lg border border-amber-300 bg-amber-50 p-3">
+              <div className="flex items-center gap-2 text-sm font-semibold text-amber-800">
+                <AlertTriangle className="h-4 w-4" />
+                {t("dupTitle")}
+              </div>
+              <p className="mt-1 text-xs text-amber-800/80">{t("dupBody")}</p>
+              <ul className="mt-2 space-y-1">
+                {duplicates.map((d) => (
+                  <li key={d.id} className="text-xs text-amber-900">
+                    • {d.title}
+                    {d.location_name ? ` — ${d.location_name}` : ""}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-2 flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setDuplicates([]);
+                    onOpenChange(false);
+                  }}
+                >
+                  {t("dupCancel")}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Photos */}
           <div className="space-y-2">
             <Label>{t("photos")}</Label>
@@ -303,8 +454,14 @@ export function ReportForm({ open, onOpenChange, defaultLat, defaultLng }: Repor
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={mutation.isPending || uploading}>
-            {uploading ? t("uploadingPhotos") : mutation.isPending ? t("sending") : t("send")}
+          <Button type="submit" className="w-full" disabled={mutation.isPending || uploading || checkingDup}>
+            {uploading
+              ? t("uploadingPhotos")
+              : mutation.isPending || checkingDup
+                ? t("sending")
+                : duplicates.length > 0
+                  ? t("dupContinue")
+                  : t("send")}
           </Button>
 
         </form>
