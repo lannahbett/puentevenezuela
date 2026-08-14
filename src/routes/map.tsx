@@ -54,7 +54,15 @@ export const Route = createFileRoute("/map")({
         property: "og:description",
         content: "Necesidades y ofertas de ayuda en vivo en Venezuela y Colombia.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Mapa de ayuda — Puente Venezuela y Colombia" },
+      {
+        name: "twitter:description",
+        content: "Necesidades y ofertas de ayuda en vivo en Venezuela y Colombia.",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://puentevenezuela.lovable.app/map" }],
   }),
   component: MapPage,
 });
