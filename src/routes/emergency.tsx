@@ -17,7 +17,15 @@ export const Route = createFileRoute("/emergency")({
         property: "og:description",
         content: "Líneas oficiales de emergencia en Venezuela y Colombia.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Emergencia — Puente Venezuela y Colombia" },
+      {
+        name: "twitter:description",
+        content: "Líneas oficiales de emergencia en Venezuela y Colombia.",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://puentevenezuela.lovable.app/emergency" }],
   }),
   component: EmergencyPage,
 });
