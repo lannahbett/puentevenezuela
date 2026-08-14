@@ -40,6 +40,38 @@ export const Route = createFileRoute("/")({
         content: "Mapa en vivo de necesidades y ofertas de ayuda en Venezuela y Colombia.",
       },
       { property: "og:image", content: heroAsset.url },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://puentevenezuela.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "twitter:title",
+        content: "Puente Venezuela y Colombia — Coordinación humanitaria en tiempo real",
+      },
+      {
+        name: "twitter:description",
+        content: "Mapa en vivo de necesidades y ofertas de ayuda en Venezuela y Colombia.",
+      },
+      { name: "twitter:image", content: heroAsset.url },
+    ],
+    links: [{ rel: "canonical", href: "https://puentevenezuela.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Puente Venezuela y Colombia",
+          url: "https://puentevenezuela.lovable.app/",
+          inLanguage: ["es", "en"],
+          description:
+            "Plataforma abierta que conecta necesidades y ofertas de ayuda tras los terremotos en Venezuela y Colombia.",
+          publisher: {
+            "@type": "Organization",
+            name: "Puente Venezuela y Colombia",
+            url: "https://puentevenezuela.lovable.app/",
+          },
+        }),
+      },
     ],
   }),
   component: LandingPage,

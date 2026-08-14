@@ -271,6 +271,43 @@ const dict: Dict = {
   reportNotFound: { es: "Reporte no encontrado", en: "Report not found" },
   openInMap: { es: "Ver en el mapa", en: "View on map" },
   postedAt: { es: "Publicado", en: "Posted" },
+  // Quick offline report
+  nav_quick: { es: "Reporte rápido", en: "Quick report" },
+  quickBadge: { es: "Funciona sin internet", en: "Works without internet" },
+  quickTitle: { es: "Reporte rápido", en: "Quick report" },
+  quickSubtitle: {
+    es: "Cuatro toques y listo. Si no hay señal, se guarda en tu teléfono y se envía solo cuando vuelva el internet.",
+    en: "Four taps and done. With no signal it is saved on your phone and sent automatically when the internet returns.",
+  },
+  quickTitlePlaceholder: {
+    es: "Ej: Necesitamos agua para 10 familias",
+    en: "e.g. We need water for 10 families",
+  },
+  quickNeedTitle: { es: "Escribe qué necesitas u ofreces", en: "Write what you need or offer" },
+  quickOnlineHint: {
+    es: "Conectado: tu reporte se publica al instante.",
+    en: "Online: your report is published instantly.",
+  },
+  quickOfflineHint: {
+    es: "Sin conexión: se guardará y se enviará automáticamente.",
+    en: "Offline: it will be saved and sent automatically.",
+  },
+  quickQueued: {
+    es: "Guardado sin conexión. Se enviará solo.",
+    en: "Saved offline. It will be sent automatically.",
+  },
+  quickSent: { es: "Reporte publicado", en: "Report published" },
+  quickSaveOffline: { es: "Guardar y enviar después", en: "Save and send later" },
+  quickLocating: { es: "Obteniendo tu ubicación...", en: "Getting your location..." },
+  quickGpsOk: { es: "Ubicación GPS: {lat}, {lng}", en: "GPS location: {lat}, {lng}" },
+  quickGpsFallback: {
+    es: "Sin GPS: se usará el centro del país seleccionado.",
+    en: "No GPS: the selected country center will be used.",
+  },
+  quickFullForm: { es: "Ir al formulario completo", en: "Go to the full form" },
+  queuePending: { es: "{n} reporte(s) pendiente(s) de envío", en: "{n} report(s) waiting to be sent" },
+  queueSyncNow: { es: "Sincronizar ahora", en: "Sync now" },
+  queueSynced: { es: "{n} reporte(s) sincronizado(s)", en: "{n} report(s) synced" },
 };
 
 

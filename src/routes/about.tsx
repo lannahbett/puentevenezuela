@@ -12,7 +12,20 @@ export const Route = createFileRoute("/about")({
         content:
           "Plataforma de coordinación humanitaria para conectar necesidades y ofertas de ayuda en Venezuela y Colombia.",
       },
+      { property: "og:title", content: "Acerca de — Puente Venezuela y Colombia" },
+      {
+        property: "og:description",
+        content: "Cómo funciona la plataforma de coordinación humanitaria para Venezuela y Colombia.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Acerca de — Puente Venezuela y Colombia" },
+      {
+        name: "twitter:description",
+        content: "Cómo funciona la plataforma de coordinación humanitaria para Venezuela y Colombia.",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://puentevenezuela.lovable.app/about" }],
   }),
   component: AboutPage,
 });

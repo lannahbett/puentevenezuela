@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Phone, Map as MapIcon, Home } from "lucide-react";
+import { Menu, X, Phone, Map as MapIcon, Home, Zap } from "lucide-react";
 import { useState } from "react";
 import logoUrl from "@/assets/logo.png";
 import { useI18n } from "@/lib/i18n";
@@ -30,6 +30,13 @@ export function Header() {
           </Link>
           <Link to="/map" className="text-muted-foreground hover:text-foreground transition-colors">
             {t("nav_map")}
+          </Link>
+          <Link
+            to="/quick"
+            className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Zap className="h-3.5 w-3.5" />
+            {t("nav_quick")}
           </Link>
           <Link
             to="/emergency"
@@ -77,6 +84,14 @@ export function Header() {
           >
             <MapIcon className="h-3.5 w-3.5" />
             {t("nav_map")}
+          </Link>
+          <Link
+            to="/quick"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+            onClick={() => setMobileOpen(false)}
+          >
+            <Zap className="h-3.5 w-3.5" />
+            {t("nav_quick")}
           </Link>
           <Link
             to="/emergency"
