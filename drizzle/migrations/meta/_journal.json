@@ -8,6 +8,13 @@
       "when": 1793136223244,
       "tag": "0000_server_only_child_inserts",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793136934657,
+      "tag": "0001_bind_report_owner_on_insert",
+      "breakpoints": true
     }
   ]
 }
