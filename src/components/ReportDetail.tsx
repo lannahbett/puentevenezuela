@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Link } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +37,13 @@ interface ReportDetailProps {
 }
 
 export function ReportDetail({ report, allReports, onClose }: ReportDetailProps) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSignedIn(!!s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
   const qc = useQueryClient();
   const [radius, setRadius] = useState(20);
   const [showAssign, setShowAssign] = useState(false);
@@ -204,25 +212,33 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
               <Share2 className="h-3.5 w-3.5" />
               {t("share")}
             </Button>
-            {!isResolved && (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => status.mutate({ data: { id: report.id, status: "resolved" } })}
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                {t("markResolved")}
+            {signedIn === false ? (
+              <Button size="sm" variant="outline" asChild>
+                <Link to="/auth">{lang === "es" ? "Inicia sesión para cambiar estado" : "Sign in to change status"}</Link>
               </Button>
-            )}
-            {isResolved && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => status.mutate({ data: { id: report.id, status: "pending" } })}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                {t("reopen")}
-              </Button>
+            ) : (
+              <>
+                {!isResolved && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => status.mutate({ data: { id: report.id, status: "resolved" } })}
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    {t("markResolved")}
+                  </Button>
+                )}
+                {isResolved && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => status.mutate({ data: { id: report.id, status: "pending" } })}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    {t("reopen")}
+                  </Button>
+                )}
+              </>
             )}
           </div>
 
