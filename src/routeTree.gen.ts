@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EmergencyRouteImport } from './routes/emergency'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as QuickRouteImport } from './routes/quick'
@@ -24,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmergencyRoute = EmergencyRouteImport.update({
@@ -50,6 +56,7 @@ const ReportIdRoute = ReportIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/emergency': typeof EmergencyRoute
   '/map': typeof MapRoute
   '/quick': typeof QuickRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/emergency': typeof EmergencyRoute
   '/map': typeof MapRoute
   '/quick': typeof QuickRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/emergency': typeof EmergencyRoute
   '/map': typeof MapRoute
   '/quick': typeof QuickRoute
@@ -74,13 +83,16 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/emergency' | '/map' | '/quick' | '/report/$id'
+  fullPaths:
+    '/' | '/about' | '/auth' | '/emergency' | '/map' | '/quick' | '/report/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/emergency' | '/map' | '/quick' | '/report/$id'
+  to:
+    '/' | '/about' | '/auth' | '/emergency' | '/map' | '/quick' | '/report/$id'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/auth'
     | '/emergency'
     | '/map'
     | '/quick'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   EmergencyRoute: typeof EmergencyRoute
   MapRoute: typeof MapRoute
   QuickRoute: typeof QuickRoute
@@ -110,6 +123,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/emergency': {
@@ -146,6 +166,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   EmergencyRoute: EmergencyRoute,
   MapRoute: MapRoute,
   QuickRoute: QuickRoute,
