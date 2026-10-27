@@ -204,25 +204,33 @@ export function ReportDetail({ report, allReports, onClose }: ReportDetailProps)
               <Share2 className="h-3.5 w-3.5" />
               {t("share")}
             </Button>
-            {!isResolved && (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => status.mutate({ data: { id: report.id, status: "resolved" } })}
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                {t("markResolved")}
+            {signedIn === false ? (
+              <Button size="sm" variant="outline" asChild>
+                <Link to="/auth">{lang === "es" ? "Inicia sesión para cambiar estado" : "Sign in to change status"}</Link>
               </Button>
-            )}
-            {isResolved && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => status.mutate({ data: { id: report.id, status: "pending" } })}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                {t("reopen")}
-              </Button>
+            ) : (
+              <>
+                {!isResolved && (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => status.mutate({ data: { id: report.id, status: "resolved" } })}
+                  >
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    {t("markResolved")}
+                  </Button>
+                )}
+                {isResolved && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => status.mutate({ data: { id: report.id, status: "pending" } })}
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    {t("reopen")}
+                  </Button>
+                )}
+              </>
             )}
           </div>
 
