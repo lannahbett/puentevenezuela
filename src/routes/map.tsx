@@ -222,7 +222,11 @@ function MapPage() {
       "assigned_to_name",
       "created_at",
     ];
-    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const esc = (v: unknown) => {
+      let s = String(v ?? "");
+      if (typeof v === "string" && /^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+      return `"${s.replace(/"/g, '""')}"`;
+    };
     const csv = [
       header.join(","),
       ...filteredReports.map((r) =>

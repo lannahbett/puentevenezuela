@@ -9,26 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as QuickRouteImport } from './routes/quick'
-import { Route as MapRouteImport } from './routes/map'
-import { Route as EmergencyRouteImport } from './routes/emergency'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as EmergencyRouteImport } from './routes/emergency'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as QuickRouteImport } from './routes/quick'
 import { Route as ReportIdRouteImport } from './routes/report.$id'
 
-const QuickRoute = QuickRouteImport.update({
-  id: '/quick',
-  path: '/quick',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapRoute = MapRouteImport.update({
-  id: '/map',
-  path: '/map',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EmergencyRoute = EmergencyRouteImport.update({
-  id: '/emergency',
-  path: '/emergency',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -36,9 +26,19 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const EmergencyRoute = EmergencyRouteImport.update({
+  id: '/emergency',
+  path: '/emergency',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuickRoute = QuickRouteImport.update({
+  id: '/quick',
+  path: '/quick',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportIdRoute = ReportIdRouteImport.update({
@@ -98,25 +98,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/quick': {
-      id: '/quick'
-      path: '/quick'
-      fullPath: '/quick'
-      preLoaderRoute: typeof QuickRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/map': {
-      id: '/map'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/emergency': {
-      id: '/emergency'
-      path: '/emergency'
-      fullPath: '/emergency'
-      preLoaderRoute: typeof EmergencyRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -126,11 +112,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/emergency': {
+      id: '/emergency'
+      path: '/emergency'
+      fullPath: '/emergency'
+      preLoaderRoute: typeof EmergencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quick': {
+      id: '/quick'
+      path: '/quick'
+      fullPath: '/quick'
+      preLoaderRoute: typeof QuickRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/report/$id': {
