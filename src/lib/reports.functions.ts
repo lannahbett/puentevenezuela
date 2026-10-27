@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const reportTypeEnum = z.enum(["need", "offer"]);
 const reportCategoryEnum = z.enum([
@@ -116,8 +117,10 @@ export const createReport = createServerFn({ method: "POST" })
   });
 
 export const updateStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data) => statusSchema.parse(data))
   .handler(async ({ data }) => {
+    // Caller is a verified signed-in user (enforced by requireSupabaseAuth).
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { id, status } = data;
     const { data: result, error } = await supabaseAdmin
