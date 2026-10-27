@@ -102,7 +102,8 @@ export const createReport = createServerFn({ method: "POST" })
     }
 
     if (items && items.length) {
-      const { error: iErr } = await supabase.from("report_items").insert(
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error: iErr } = await supabaseAdmin.from("report_items").insert(
         items.map((i) => ({
           report_id: result.id,
           label: i.label,
@@ -188,8 +189,8 @@ const addItemSchema = z.object({
 export const addReportItem = createServerFn({ method: "POST" })
   .inputValidator((data) => addItemSchema.parse(data))
   .handler(async ({ data }) => {
-    const supabase = await getPublicClient();
-    const { data: row, error } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
       .from("report_items")
       .insert({
         report_id: data.reportId,
@@ -256,8 +257,8 @@ const addUpdateSchema = z.object({
 export const addReportUpdate = createServerFn({ method: "POST" })
   .inputValidator((data) => addUpdateSchema.parse(data))
   .handler(async ({ data }) => {
-    const supabase = await getPublicClient();
-    const { data: row, error } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
       .from("report_updates")
       .insert({
         report_id: data.reportId,
